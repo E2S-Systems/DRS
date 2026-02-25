@@ -1,5 +1,8 @@
 FROM php:8.4-cli-alpine
 
+RUN apk add --no-cache tzdata
+ENV TZ=America/Sao_Paulo
+
 RUN apk add --no-cache \
     postgresql-dev \
     libzip-dev \
