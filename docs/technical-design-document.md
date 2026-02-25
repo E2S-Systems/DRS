@@ -1,7 +1,7 @@
 # 📘 Technical Design Document - D.R.S
 
 **Versão:** 1.1.0 | **Status:** Ativo | **Última Atualização:** 23/02/2026
-**Público-Alvo:** Equipe de Engenharia e Desenvolvimento
+| **Público-Alvo:** Equipe de Engenharia e Desenvolvimento
 
 ## 1. Visão Executiva
 
@@ -209,8 +209,9 @@ O sistema operará sob um padrão de Monorepo para assegurar a atomicidade de co
 ```
 drs-erp/
 ├── backend/                # Laravel 11 Application (Core)
+├── bi-service/             # Python FastAPI Application (Analytics)
+├── docs/                   # Project Documentation (Markdown, Diagrams)
 ├── frontend/               # Nuxt 3 Application (SPA)
-├── data-service/           # Python FastAPI Application (Analytics)
 ├── infra/                  # Manifestos IaC (Kubernetes, Docker, Prometheus)
 ├── docker-compose.yml      # Orquestração local de desenvolvimento
 ```
