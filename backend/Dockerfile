@@ -10,9 +10,14 @@ RUN apk add --no-cache \
     unzip \
     git \
     linux-headers \
+    libpng-dev \
+    libjpeg-turbo-dev \
+    freetype-dev \
     $PHPIZE_DEPS
 
-RUN docker-php-ext-install pdo_pgsql zip \
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+
+RUN docker-php-ext-install pdo_pgsql zip exif gd \
     && pecl install redis \
     && docker-php-ext-enable redis \
     && pecl install pcov \
