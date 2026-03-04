@@ -47,9 +47,9 @@ services:
       - DB_CONNECTION=pgsql
       - DB_HOST=postgres
       - DB_PORT=5432
-      - DB_DATABASE=${DB_DATABASE:-drs_erp}
+      - DB_DATABASE=${DB_DATABASE:-postgres}
       - DB_USERNAME=${DB_USERNAME:-postgres}
-      - DB_PASSWORD=${DB_PASSWORD:-secret}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
       - REDIS_HOST=redis
       - KAFKA_BROKERS=kafka:9092
     depends_on:
@@ -79,7 +79,7 @@ services:
     environment:
       - ENVIRONMENT=development
       - KAFKA_BROKER_URL=kafka:9092
-      - POSTGRES_URL=postgresql://${DB_USERNAME:-postgres}:${DB_PASSWORD:-secret}@postgres:5432/${DB_DATABASE:-drs_erp}
+      - POSTGRES_URL=postgresql://${DB_USERNAME:-postgres}:${DB_PASSWORD:-password}@postgres:5432/${DB_DATABASE:-postgres}
     depends_on:
       kafka:
         condition: service_healthy
@@ -97,13 +97,13 @@ services:
     ports:
       - "5434:5432"
     environment:
-      POSTGRES_DB: ${DB_DATABASE:-drs_erp}
+      POSTGRES_DB: ${DB_DATABASE:-postgres}
       POSTGRES_USER: ${DB_USERNAME:-postgres}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-secret}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
     volumes:
       - drs_pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-drs_erp}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-postgres}"]
       interval: 5s
       timeout: 5s
       retries: 5
