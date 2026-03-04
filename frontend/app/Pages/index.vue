@@ -1,5 +1,5 @@
 <template>
   <div>
-    <NuxtLink to="/user">Index usuarios</NuxtLink>
+    <NuxtLink to="/user">Index usuários</NuxtLink>
   </div>
 </template>
