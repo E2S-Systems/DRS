@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class UserController extends Controller
 {
     public function index(){
-        return response()->json(['message' => 'User index teste'], 200);
+        $users = User::get();
+
+        return response()->json(['message' => "Usuários recuperados com sucesso", 'data' => $users], 200);
     }
 
     // public function create(CreateUserRequest $request){
