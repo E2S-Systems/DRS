@@ -95,7 +95,7 @@ services:
     container_name: drs_postgres
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "5434:5432"
     environment:
       POSTGRES_DB: ${DB_DATABASE:-drs_erp}
       POSTGRES_USER: ${DB_USERNAME:-postgres}
