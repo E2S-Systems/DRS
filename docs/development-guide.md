@@ -1,4 +1,4 @@
-# Guia de Desenvolvimento e Convenções - D.R.S
+# 📙 Development Guide - D.R.S
 
 **Versão:** 1.0.0 | **Última Atualização:** 24/02/2026 | **Público-Alvo:** Equipe de Engenharia e Desenvolvimento
 
@@ -50,9 +50,7 @@ O histórico de commits deve ser semântico e rastreável.
 
 **Exemplo prático:**  `feat: adiciona calculo de juros no parcelamento`
 
-## 2. Fluxo de Trabalho e Pull Requests (PR)
-
-### 2.1. Regras de Criação de PR
+### 1.3. Regras de Criação de PR
 
 - **Jira Obrigatório:** Todo o PR deve ser originado de um cartão ativo no Jira. Ninguém programa sem um cartão.
 
@@ -60,7 +58,7 @@ O histórico de commits deve ser semântico e rastreável.
 
 - A descrição deve conter instruções de como testar a funcionalidade localmente.
 
-### 2.2. Checklist de Aprovação (Definition of Done - DoD)
+### 1.4. Checklist de Aprovação (Definition of Done - DoD)
 
 Um PR só pode sofrer merge para a `develop` se cumprir os seguintes critérios obrigatórios:
 
@@ -75,6 +73,46 @@ Um PR só pode sofrer merge para a `develop` se cumprir os seguintes critérios 
 - [ ] O contrato da API (no Backend) foi implementado e reflete no Swagger/Scramble.
 
 - [ ] O PR recebeu Code Review e aprovação de pelo menos 1 (um) membro distinto da equipa.
+
+
+## 2. Checklist Rápido: Criando um Novo CRUD
+
+Sempre que uma nova entidade (ex: Produto, Fornecedor, Cliente) for desenvolvida, siga a ordem deste checklist para garantir a integridade da arquitetura do projeto.
+
+### 2.1. Backend (Laravel)
+
+- [ ] **Permissões (config/):** Atualizar permissions.php e mapear os acessos no profile-permissions.php. Rodar o Seeder em seguida.
+
+- [ ] **Migration:** Criar a tabela. É obrigatório incluir branch_id (se for isolado por filial) e $table->softDeletes().
+
+- [ ] **Seeder / Factory:** Criar dados de teste (mínimo de 10 registos) para facilitar a vida do Frontend.
+
+- [ ] **Model:** Configurar $fillable, relacionamentos, casts e usar a Trait MultiTenantable (se aplicável ao domínio).
+
+- [ ] **Policy:** Criar a Policy garantindo a união entre a permissão (Spatie) e o Isolamento Multi-Filial (branch_id).
+
+- [ ] **FormRequests:** Criar classes de validação estritas para os verbos de entrada (ex: StoreProductRequest e UpdateProductRequest).
+
+- [ ] **Service / Action:** Isolar a regra de negócio (inserção/atualização) num ficheiro dedicado (ex: ProductService).
+
+- [ ] **Resource (DTO de Saída):** Criar a formatação de resposta (ex: ProductResource), ocultando campos sensíveis.
+
+- [ ] **Controller:** Criar a classe apenas para orquestrar o Request, invocar o Service e retornar o Resource (máx. 15 linhas por método).
+
+- [ ] **Rotas:** Adicionar o endpoint no routes/api.php, protegendo com o middleware de permissão ou authorize() no Controller.
+
+### 3.2. Frontend (Nuxt/Vue)
+
+- [ ] **Service de API (services/api/):** Criar a classe que espelha os endpoints gerados no Swagger/Scramble (ex: ProductService.ts).
+
+- [ ] **Páginas (pages/):** Criar a estrutura de roteamento (ex: pages/products/index.vue, create.vue, [id].vue).
+
+- [ ] **Componentes (components/):** Isolar elementos de UI complexos (ex: FormProduct.vue, DataTableProducts.vue). Eles devem ser "burros" (usar props e emits).
+
+- [ ] **Store / Pinia (stores/):** Apenas se a entidade precisar de estar globalmente acessível na memória da aplicação (evitar o uso indiscriminado).
+
+- [ ] **Layouts (layouts/):** Atualizar o menu lateral de navegação (se a nova entidade for uma rota principal).
+
 
 ## 3. Convenções de Código: Backend (Laravel)
 
