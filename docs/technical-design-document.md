@@ -1,4 +1,4 @@
-# 📘 Technical Design Document - D.R.S
+# 📗 Technical Design Document - D.R.S
 
 **Versão:** 1.1.0 | **Status:** Ativo | **Última Atualização:** 23/02/2026
 | **Público-Alvo:** Equipe de Engenharia e Desenvolvimento
