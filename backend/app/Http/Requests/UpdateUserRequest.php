@@ -3,9 +3,10 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validationz\Validator;
+use Illuminate\Validation\Rule;
+use App\Models\User;
 
-class CreateUserRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +23,18 @@ class CreateUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $user = $this->route('id') ? User::find($this->route('id')) : null;
+
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email:rfc,dns|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'email' => [
+                'required',
+                'string',
+                Rule::unique('users')->ignore($user->id),
+                'max:255'
+            ],    
+            'password' => 'sometimes|nullable|string|min:8|confirmed:password_confirmation',
         ];
     }
 

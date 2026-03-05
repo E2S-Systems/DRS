@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Validationz\Validator;
 
 class StoreUserRequest extends FormRequest
 {
@@ -25,13 +25,8 @@ class StoreUserRequest extends FormRequest
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'string',
-                Rule::unique('users')->ignore($user->id),
-                'max:255'
-            ],    
-            'password' => 'string|min:8|confirmed',
+            'email' => 'required|string|email:rfc,dns|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed:password_confirmation',
         ];
     }
 
