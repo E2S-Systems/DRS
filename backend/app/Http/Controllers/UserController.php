@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\User\CreateUserAction;
+use App\Actions\User\UpdateUserAction;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\StoreUpdateUserResource;
@@ -22,9 +24,9 @@ class UserController extends Controller
         ]);
     }
 
-    public function store(StoreUserRequest $request): JsonResponse
+    public function store(StoreUserRequest $request, CreateUserAction $action): JsonResponse
     {
-        $user = User::create($request->validated());
+        $user = $action->handle($request->validated());
 
         return response()->json([
             'success' => true,
@@ -42,9 +44,9 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(UpdateUserRequest $request, User $user): JsonResponse
+    public function update(UpdateUserRequest $request, User $user, UpdateUserAction $action): JsonResponse
     {
-        $user->update($request->validated());
+        $user = $action->handle($user, $request->validated());
 
         return response()->json([
             'success' => true,
