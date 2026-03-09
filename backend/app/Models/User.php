@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
@@ -18,12 +19,12 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'email',
-        'password'
+        'password',
     ];
 
     protected $casts = [
-        'password' => 'hashed',
-        'is_active' => 'boolean',
-        'last_login_at' => 'datetime'
+        'password'      => 'hashed',
+        'is_active'     => 'boolean',
+        'last_login_at' => 'datetime',
     ];
 }

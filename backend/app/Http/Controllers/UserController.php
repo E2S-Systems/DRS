@@ -1,49 +1,55 @@
 <?php
 
+declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\StoreUpdateUserResource;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
     public function index(): JsonResponse
     {
-        $users = User::paginate(10);
-
-        return response()->json(['success' => true, 'message' => "Usuários recuperados com sucesso!", 'data' => $users], 200);
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuários recuperados com sucesso!',
+            'data'    => UserResource::collection(User::paginate(10)),
+        ]);
     }
 
     public function store(StoreUserRequest $request): JsonResponse
     {
-        $validate = $request->validated();
-        User::create($validate);
+        $user = User::create($request->validated());
 
-        return response()->json(['success' => true, 'message' => 'Usuário criado com sucesso!', 'data' => $validate], 201);
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuário criado com sucesso!',
+            'data'    => new StoreUpdateUserResource($user),
+        ], 201);
     }
 
-    public function show(int $id): JsonResponse
+    public function show(User $user): JsonResponse
     {
-        $users = User::findOrFail($id);
-
-        return response()->json(['success' => true, 'message' => "Usuário encontrado: $id", 'data' => $users], 200);
+        return response()->json([
+            'success' => true,
+            'message' => "Usuário encontrado: {$user->id}",
+            'data'    => new UserResource($user),
+        ]);
     }
 
-    public function update(UpdateUserRequest $request, int $id): JsonResponse
+    public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
-        $validated = $request->validated();
+        $user->update($request->validated());
 
-        if (isset($validated['password'])) {
-            $validated['password'] = bcrypt($validated['password']);
-        }
-
-        $user = User::findOrFail($id);
-        $user->update($validated);
-
-        return response()->json(['success' => true, 'message' => 'Usuário editado com sucesso!', 'data' => $user], 200);
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuário editado com sucesso!',
+            'data'    => new StoreUpdateUserResource($user),
+        ]);
     }
 }
