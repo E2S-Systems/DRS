@@ -27,4 +27,9 @@ class User extends Authenticatable
         'is_active'     => 'boolean',
         'last_login_at' => 'datetime',
     ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 }

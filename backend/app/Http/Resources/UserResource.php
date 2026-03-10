@@ -21,7 +21,7 @@ class UserResource extends JsonResource
             'email' => $this->email,    
             'role' => $this->role,
             'is_active' => $this->is_active,
-            'last_login_at' => $this->last_login_at
+            'last_login_at' => optional($this->last_login_at)->toDateTimeString()
         ];
     }
 }

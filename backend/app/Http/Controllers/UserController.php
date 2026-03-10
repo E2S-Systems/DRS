@@ -4,54 +4,61 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\User\CreateUserAction;
-use App\Actions\User\UpdateUserAction;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\StoreUpdateUserResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class UserController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(): AnonymousResourceCollection
     {
-        return response()->json([
-            'success' => true,
-            'message' => 'Usuários recuperados com sucesso!',
-            'data'    => UserResource::collection(User::paginate(10)),
-        ]);
+        Gate::authorize('viewAny', User::class);
+        $users = User::query()->paginate(10);
+
+        return UserResource::collection($users)
+            ->additional([
+                'success' => true,
+                'message' => 'Users retrieved successfully!',
+            ]);
     }
 
-    public function store(StoreUserRequest $request, CreateUserAction $action): JsonResponse
-    {
-        $user = $action->handle($request->validated());
+    public function store(StoreUserRequest $request): StoreUpdateUserResource
+    {   
+        Gate::authorize('create', User::class);
+        $user = User::create($request->validated());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Usuário criado com sucesso!',
-            'data'    => new StoreUpdateUserResource($user),
-        ], 201);
+        return (new StoreUpdateUserResource($user))
+            ->additional([
+                'success' => true,
+                'message' => 'User created successfully!',
+            ]);
     }
 
-    public function show(User $user): JsonResponse
+    public function show(User $user): UserResource
     {
-        return response()->json([
-            'success' => true,
-            'message' => "Usuário encontrado: {$user->id}",
-            'data'    => new UserResource($user),
-        ]);
+        Gate::authorize('view', User::class);
+        return (new UserResource($user))
+            ->additional([
+                'success' => true,
+                'message' => "User found: {$user->id}",
+            ]);
     }
 
-    public function update(UpdateUserRequest $request, User $user, UpdateUserAction $action): JsonResponse
+    public function update(UpdateUserRequest $request, User $user): StoreUpdateUserResource
     {
-        $user = $action->handle($user, $request->validated());
+        Gate::authorize('update', User::class);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Usuário editado com sucesso!',
-            'data'    => new StoreUpdateUserResource($user),
-        ]);
+        $validated = $request->validated();
+        $user->update($validated);
+
+        return (new StoreUpdateUserResource($user))
+            ->additional([
+                'success' => true,
+                'message' => 'User updated successfully!',
+            ]);
     }
 }
