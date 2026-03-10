@@ -61,4 +61,16 @@ class UserController extends Controller
                 'message' => 'User updated successfully!',
             ]);
     }
+
+    public function destroy(User $user): UserResource
+    {
+        Gate::authorize('delete', User::class);
+        $user->delete();
+
+        return (new UserResource($user))
+            ->additional([
+                'success' => true,
+                'message' => 'User deleted successfully!',
+            ]);
+    }
 }
