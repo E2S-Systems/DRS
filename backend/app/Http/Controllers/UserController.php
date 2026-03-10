@@ -28,7 +28,6 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request): StoreUpdateUserResource
     {   
-        Gate::authorize('create', User::class);
         $user = User::create($request->validated());
 
         return (new StoreUpdateUserResource($user))
@@ -50,8 +49,6 @@ class UserController extends Controller
 
     public function update(UpdateUserRequest $request, User $user): StoreUpdateUserResource
     {
-        Gate::authorize('update', User::class);
-
         $validated = $request->validated();
         $user->update($validated);
 

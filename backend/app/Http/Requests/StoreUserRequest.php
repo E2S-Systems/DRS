@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validationz\Validator;
+use App\Models\User;
 
 class StoreUserRequest extends FormRequest
 {
@@ -30,7 +33,7 @@ class StoreUserRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'first_name.required' => 'O campo nome é obrigatório.',
