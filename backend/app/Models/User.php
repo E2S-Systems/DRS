@@ -20,6 +20,7 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
+        'created_by',
     ];
 
     protected $casts = [
@@ -32,4 +33,14 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function creator(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function createdUsers(): HasMany
+    {
+        return $this->hasMany(User::class, 'created_by');
+    }
 }
