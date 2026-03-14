@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validationz\Validator;
 use App\Models\User;
+use App\Enums\RoleUser;
+use Illuminate\Validation\Rules\Enum;
 
 class StoreUserRequest extends FormRequest
 {
@@ -29,6 +30,7 @@ class StoreUserRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email:rfc,dns|max:255|unique:users',
+            'role' => ['required', new Enum(RoleUser::class)],
             'password' => 'required|string|min:8|confirmed:password_confirmation',
         ];
     }
@@ -41,6 +43,8 @@ class StoreUserRequest extends FormRequest
             'email.required' => 'O campo email é obrigatório.',
             'email.email' => 'O campo email deve ser um endereço de email válido.',
             'email.unique' => 'O email já está em uso.',
+            'role.required' => 'O campo cargo é obrigatório.',
+            'role.enum' => 'O campo cargo deve ser um valor válido.',
             'password.required' => 'O campo senha é obrigatório.',
             'password.min' => 'A senha deve ter pelo menos 8 caracteres.',
             'password.confirmed' => 'A confirmação da senha não corresponde.',
