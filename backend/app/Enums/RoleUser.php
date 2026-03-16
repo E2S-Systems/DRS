@@ -19,7 +19,6 @@ enum RoleUser: string
         };
     }
 
-    // Útil para o frontend — retorna array para popular um <select>
     public static function toSelectOptions(): array
     {
         return array_map(

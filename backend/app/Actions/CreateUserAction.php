@@ -2,23 +2,15 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Actions;
 
 use App\Models\User;
 use App\Enums\RoleUser;
 use Illuminate\Support\Arr;
 
-class UserService
+class CreateUserAction
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    public function create(array $data): User
+    public function execute(array $data): User
     {
         $role = RoleUser::from($data['role']);
 

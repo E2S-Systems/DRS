@@ -11,16 +11,10 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use App\Enums\RoleUser;
-use Illuminate\Support\Arr;
-use App\Services\UserService;
+use App\Actions\CreateUserAction;
 
 class UserController extends Controller
 {
-    public function __construct(private UserService $userService)
-    {
-        //
-    }
 
     public function index(): AnonymousResourceCollection
     {
@@ -34,9 +28,9 @@ class UserController extends Controller
             ]);
     }
 
-    public function store(StoreUserRequest $request): StoreUpdateUserResource
+    public function store(StoreUserRequest $request, CreateUserAction $createUserAction): StoreUpdateUserResource
     {   
-        $user = $this->userService->create($request->validated());
+        $user = $createUserAction->execute($request->validated());
 
         return (new StoreUpdateUserResource($user))
             ->additional([
