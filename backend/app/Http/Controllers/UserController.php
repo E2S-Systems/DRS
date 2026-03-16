@@ -28,9 +28,9 @@ class UserController extends Controller
             ]);
     }
 
-    public function store(StoreUserRequest $request, CreateUserAction $createUserAction): StoreUpdateUserResource
+    public function store(StoreUserRequest $request): StoreUpdateUserResource
     {   
-        $user = $createUserAction->execute($request->validated());
+        $user = CreateUserAction::new()->execute($request->validated());
 
         return (new StoreUpdateUserResource($user))
             ->additional([

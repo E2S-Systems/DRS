@@ -22,9 +22,7 @@ class AuthController extends Controller
 
         if (!$result['success']) {
             return response()->json([
-            'success' => true,
-            'access_token' => $result['access_token'],
-            'token_type' => $result['token_type'],
+                'success' => false,
             ], HttpResponse::HTTP_UNAUTHORIZED);
         }
 
@@ -32,13 +30,13 @@ class AuthController extends Controller
             'success' => true,
             'access_token' => $result['access_token'],
             'token_type' => $result['token_type'],
-        ], 200);
+        ], HttpResponse::HTTP_OK);
     }
 
     public function logout(LogoutRequest $request): JsonResponse
     {
         $result = LogoutUserAction::new()->execute($request->user());
 
-        return response()->json($result, 200);
+        return response()->json($result, HttpResponse::HTTP_OK);
     }
 }
