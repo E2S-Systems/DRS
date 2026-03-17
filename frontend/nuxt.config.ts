@@ -1,5 +1,8 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import Aura from '@primevue/themes/aura';
+import tailwindcss from "@tailwindcss/vite";
+
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -32,6 +35,7 @@ export default defineNuxtConfig({
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://backend:8000/api'
     }
   },
+  css: ['./app/assets/css/main.css'],
   vite: {
     server: {
       hmr: {
@@ -39,6 +43,9 @@ export default defineNuxtConfig({
         host: 'localhost',
         port: 24678
       }
-    }
+    },
+    plugins: [
+      tailwindcss(),
+    ],
   }
 })
