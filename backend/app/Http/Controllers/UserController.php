@@ -11,9 +11,11 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use App\Actions\CreateUserAction;
 
 class UserController extends Controller
 {
+
     public function index(): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', User::class);
@@ -28,7 +30,7 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request): StoreUpdateUserResource
     {   
-        $user = User::create($request->validated());
+        $user = CreateUserAction::new()->execute($request->validated());
 
         return (new StoreUpdateUserResource($user))
             ->additional([
