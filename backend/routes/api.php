@@ -6,3 +6,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+
+Route::prefix('v1')->group(function () {
+    Route::apiResource('branches', \App\Http\Controllers\BranchController::class);
+})->middleware('auth:sanctum');
