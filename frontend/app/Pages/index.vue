@@ -33,7 +33,7 @@ definePageMeta({
 })
 
 const form = ref({
-  email: 'mdominato@example.org',
+  email: 'valeria.deaguiar@gmail.com',
   password: 'password',
 })
 
@@ -46,19 +46,35 @@ const config = useRuntimeConfig()
 async function login() {
   try {
     loading.value = true
-    await $fetch(config.public.urlBase + 'sanctum/csrf-cookie', {
+    await fetch(config.public.urlBase + '/sanctum/csrf-cookie', {
       credentials: 'include',
     });
+
+    const token = useCookie('XSRF-TOKEN');
+
+    const response = await fetch(config.public.apiBase + 'login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-XSRF-TOKEN': token.value ? decodeURIComponent(token.value) : '',
+      },
+      body: JSON.stringify(form.value),
+      credentials: 'include',
+      redirect: 'manual'
+    });
+
+    if (response.ok) {
+      navigateTo('/user')
+    }
+
     loading.value = false;
   } catch (error) {
     loading.value = false;
-    toast.add({
-      severity: 'error',
-      summary: 'Erro',
-      detail: 'Ocorreu um erro ao tentar fazer login. Por favor, tente novamente.',
-      icon: 'pi pi-times',
-      life: 3000,
-    })
+    toast.error({
+      title: 'Erro!',
+      message: 'Credenciais inválidas. Tente novamente.',
+      timeout: 3000,
+    });
   }
 }
 
