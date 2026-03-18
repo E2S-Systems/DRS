@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     plugins: 'Plugins',
     middleware: 'Middleware'
   },
-  modules: ['@primevue/nuxt-module', '@pinia/nuxt'],
+  modules: ['@primevue/nuxt-module', '@pinia/nuxt', 'nuxt-toast'],
   primevue: {
     options: {
       ripple: true,
@@ -31,8 +31,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      urlBase: 'http://localhost:8000/',
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api',
+      urlBase: 'http://localhost:8000',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
     }
   },
   css: ['./app/assets/css/main.css'],
