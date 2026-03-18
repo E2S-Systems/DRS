@@ -2,7 +2,6 @@
 import Aura from '@primevue/themes/aura';
 import tailwindcss from "@tailwindcss/vite";
 
-
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -32,7 +31,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://backend:8000/api'
+      urlBase: 'http://localhost:8000/',
+      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api',
     }
   },
   css: ['./app/assets/css/main.css'],
