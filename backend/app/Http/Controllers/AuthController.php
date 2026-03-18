@@ -13,15 +13,9 @@ use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
-    public function __construct(
-        private LoginUserAction $loginUserAction,
-        private LogoutUserAction $logoutUserAction,
-    ) {
-    }
-
     public function login(LoginRequest $request): JsonResponse
     {
-        $result = $this->loginUserAction->execute(
+        $result = LoginUserAction::new()->execute(
             email: $request->validated('email'),
             password: $request->validated('password'),
         );
@@ -29,21 +23,20 @@ class AuthController extends Controller
         if (!$result['success']) {
             return response()->json([
                 'success' => false,
-                'message' => $result['message'],
-            ], 401);
+            ], HttpResponse::HTTP_UNAUTHORIZED);
         }
 
         return response()->json([
             'success' => true,
             'access_token' => $result['access_token'],
             'token_type' => $result['token_type'],
-        ], 201);
+        ], HttpResponse::HTTP_OK);
     }
 
     public function logout(LogoutRequest $request): JsonResponse
     {
-        $result = $this->logoutUserAction->execute($request->user());
+        $result = LogoutUserAction::new()->execute($request->user());
 
-        return response()->json($result, 200);
+        return response()->json($result, HttpResponse::HTTP_OK);
     }
 }
