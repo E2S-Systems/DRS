@@ -2,21 +2,20 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Update;
 
-use Illuminate\Foundation\Http\FormRequest;
 use App\Models\User;
-use App\Enums\RoleUser;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class StoreUserRequest extends FormRequest
+class UserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', User::class);
+        return $this->user()->can('update', User::class);
     }
 
     /**
@@ -26,16 +25,22 @@ class StoreUserRequest extends FormRequest
      */
     public function rules(): array
     {
+        $user = $this->route('user');
+
         return [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email:rfc,dns|max:255|unique:users',
-            'role' => ['required', new Enum(RoleUser::class)],
-            'password' => 'required|string|min:8|confirmed:password_confirmation',
+            'first_name' => 'sometimes|string|max:255',
+            'last_name' => 'sometimes|string|max:255',
+            'email' => [
+                'sometimes',
+                'string',
+                Rule::unique('users')->ignore($user->id),
+                'max:255'
+            ],
+            'password' => 'sometimes|nullable|string|min:8|confirmed:password_confirmation',
         ];
     }
 
-    public function messages(): array
+    public function messages()
     {
         return [
             'first_name.required' => 'O campo nome é obrigatório.',
@@ -43,8 +48,6 @@ class StoreUserRequest extends FormRequest
             'email.required' => 'O campo email é obrigatório.',
             'email.email' => 'O campo email deve ser um endereço de email válido.',
             'email.unique' => 'O email já está em uso.',
-            'role.required' => 'O campo cargo é obrigatório.',
-            'role.enum' => 'O campo cargo deve ser um valor válido.',
             'password.required' => 'O campo senha é obrigatório.',
             'password.min' => 'A senha deve ter pelo menos 8 caracteres.',
             'password.confirmed' => 'A confirmação da senha não corresponde.',
