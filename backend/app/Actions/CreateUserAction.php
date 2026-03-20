@@ -6,10 +6,12 @@ namespace App\Actions;
 
 use App\Models\User;
 use App\Enums\RoleUser;
+use App\Traits\Newable;
 use Illuminate\Support\Arr;
 
 class CreateUserAction
 {
+    use Newable;
     public function execute(array $data): User
     {
         $role = RoleUser::from($data['role']);

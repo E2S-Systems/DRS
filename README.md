@@ -102,4 +102,4 @@ Antes de iniciar qualquer desenvolvimento ou abrir um Pull Request, é obrigató
 
 [📙 Development Guide](docs/development-guide.md)
 
-_Confidencial - Propriedade Intelectual da E2S Labs © 2026_
+_Propriedade Intelectual - E2S Systems © 2026_
