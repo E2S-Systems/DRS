@@ -18,7 +18,7 @@
           <div class="flex gap-3"><input type="checkbox">Lembre-se de mim</div>
           <span>Esqueceu sua senha?</span>
         </div>
-        <button @click.prevent="login" class="bg-[#E10600] text-white py-2 px-4 rounded-md">
+        <button @click.prevent="userLogin" class="bg-[#E10600] text-white py-2 px-4 rounded-md">
           <template v-if="loading">Carregando...</template>
           <template v-else>Login</template>
         </button>
@@ -35,50 +35,15 @@ definePageMeta({
 const form = ref({
   email: 'valeria.deaguiar@gmail.com',
   password: 'password',
+  remeber: true,
 })
 
-const loading = ref(false)
+const { login } = useSanctumAuth()
 
-const toast = useToast()
+async function userLogin(){
 
-const config = useRuntimeConfig()
-
-async function login() {
-  try {
-    loading.value = true
-    await fetch(config.public.urlBase + '/sanctum/csrf-cookie', {
-      credentials: 'include',
-    });
-
-    const token = useCookie('XSRF-TOKEN');
-
-    const response = await fetch(config.public.apiBase + 'login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-XSRF-TOKEN': token.value ? decodeURIComponent(token.value) : '',
-      },
-      body: JSON.stringify(form.value),
-      credentials: 'include',
-      redirect: 'manual'
-    });
-
-    if (response.ok) {
-      navigateTo('/user')
-    }
-
-    loading.value = false;
-  } catch (error) {
-    loading.value = false;
-    toast.error({
-      title: 'Erro!',
-      message: 'Credenciais inválidas. Tente novamente.',
-      timeout: 3000,
-    });
-  }
+  await login(form.value);
 }
-
-
 
 </script>
 
