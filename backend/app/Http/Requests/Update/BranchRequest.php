@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Update;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
-class UpdateBranchRequest extends FormRequest
+class BranchRequest extends FormRequest
 {
     public function authorize(): bool
     {

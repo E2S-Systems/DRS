@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreBranchRequest;
-use App\Http\Requests\UpdateBranchRequest;
+use App\Http\Requests\Store\BranchRequest as StoreRequest;
+use App\Http\Requests\Update\BranchRequest as UpdateRequest;
 use App\Http\Resources\BranchResource;
 use App\Models\Branch;
 use Illuminate\Http\JsonResponse;
@@ -23,7 +23,7 @@ class BranchController extends Controller
         return BranchResource::collection($branches);
     }
 
-    public function store(StoreBranchRequest $request): BranchResource
+    public function store(StoreRequest $request): BranchResource
     {
         $branch = Branch::create($request->validated());
 
@@ -37,7 +37,7 @@ class BranchController extends Controller
         return new BranchResource($branch);
     }
 
-    public function update(UpdateBranchRequest $request, Branch $branch): BranchResource
+    public function update(UpdateRequest $request, Branch $branch): BranchResource
     {
         $branch->update($request->validated());
 
