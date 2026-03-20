@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     plugins: 'Plugins',
     middleware: 'Middleware'
   },
-  modules: ['@primevue/nuxt-module', '@pinia/nuxt', 'nuxt-toast'],
+  modules: ['@primevue/nuxt-module', '@pinia/nuxt', 'nuxt-toast', 'nuxt-auth-sanctum'],
   primevue: {
     options: {
       ripple: true,
@@ -31,8 +31,24 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      urlBase: 'http://localhost:8000',
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
+      sanctum: {
+        baseUrl: 'http://localhost:8000',
+        endpoints: {
+            csrf: '/sanctum/csrf-cookie',
+            login: 'api/v1/login',
+            logout: 'api/v1/logout',
+            user: '/api/v1/users',
+        },
+        mode: 'token',
+        redirect: {
+          onLogin: '/user',
+          onLogout: '/',
+          onGuestOnly: '/users',
+          onAuthOnly: '/',
+        },
+        redirectIfAuthenticated: true,
+      },
+      apiUrl: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
     }
   },
   css: ['./app/assets/css/main.css'],
