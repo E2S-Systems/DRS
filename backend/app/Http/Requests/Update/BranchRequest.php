@@ -19,6 +19,7 @@ class BranchRequest extends FormRequest
 
         return [
             'name'               => ['sometimes', 'required', 'string', 'max:255'],
+            'slug_name'          => ['sometimes', 'required', 'string', 'max:255'],
             'corporate_name'     => ['sometimes', 'nullable', 'string', 'max:255'],
             'document'           => ['sometimes', 'required', 'string', 'max:20', Rule::unique('branches', 'document')->ignore($branchId)],
             'state_registration' => ['sometimes', 'nullable', 'string', 'max:50'],
@@ -40,10 +41,10 @@ class BranchRequest extends FormRequest
         return [
             'required'    => 'O campo :attribute é obrigatório.',
             'string'      => 'O campo :attribute deve ser um texto.',
-            'max.string'  => 'O campo :attribute não pode ter mais de :max caracteres.',
+            'max'         => 'O campo :attribute não pode ter mais de :max caracteres.',
             'email'       => 'O campo :attribute deve ser um e-mail válido.',
             'unique'      => 'O campo :attribute já está em uso.',
-            'size.string' => 'O campo :attribute deve ter :size caracteres.',
+            'size'        => 'O campo :attribute deve ter :size caracteres.',
             'boolean'     => 'O campo :attribute deve ser verdadeiro ou falso.',
         ];
     }
