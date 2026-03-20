@@ -1,8 +1,14 @@
 <?php
 
+use App\Exceptions\BusinessException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -15,8 +21,12 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        $exceptions->shouldRenderJsonWhen(function ($request, \Throwable $e): bool {
+            return $request->is('api/*') || $request->expectsJson();
+        });
+
         $exceptions->render(function (BusinessException $e, $request) {
-            if (! $request->expectsJson()) {
+            if (! $request->is('api/*') && ! $request->expectsJson()) {
                 return null;
             }
 
@@ -26,10 +36,9 @@ return Application::configure(basePath: dirname(__DIR__))
             ], $e->getStatus());
         });
 
-        $exceptions->render(function (Throwable $e, $request) {
-
-            if (! $request->expectsJson()) {
-                return null; 
+        $exceptions->render(function (\Throwable $e, $request) {
+            if (! $request->is('api/*') && ! $request->expectsJson()) {
+                return null;
             }
 
             $status = 500;
@@ -40,11 +49,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 $status = 422;
                 $message = 'Erro de validação';
                 $errors = $e->errors();
-            }
-
-            elseif ($e instanceof HttpException){
-                $status = 400;
-                $message = 'Requisição inválida';
             }
 
             elseif ($e instanceof AuthenticationException) {
@@ -64,7 +68,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
             elseif ($e instanceof HttpExceptionInterface) {
                 $status = $e->getStatusCode();
-                $message = $e->getMessage() ?: 'Erro HTTP';
+                $message = $e->getMessage() ?: 'Requisição inválida';
             }
 
             return response()->json([
