@@ -1,6 +1,6 @@
 <template>
   <main class="flex h-lvh max-h-full">
-    <div id="left-side" class="bg-bg w-1/2 h-full flex items-center justify-center">
+    <div id="left-side" class="bg-bg w-full md:w-1/2 h-full flex items-center justify-center">
       <div class="flex flex-col w-full max-w-lg px-16 gap-8">
         <div class="flex flex-col italic">
           <span class="font-bold text-xl">DRS ERP</span>
@@ -34,7 +34,7 @@
       </div>
     </div>
 
-    <div id="right-side" class="w-1/2 h-full relative border-y-4 border-primary overflow-hidden">
+    <div id="right-side" class="w-1/2 h-full relative border-y-4 border-primary overflow-hidden hidden md:block">
 
       <div class="absolute inset-0 bg-bg-panel"></div>
 
