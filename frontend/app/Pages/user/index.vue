@@ -24,6 +24,7 @@
     </div>
 
   </div>
+  <button @click="userLogout" class="mt-4 px-4 py-2 bg-red-500 text-white rounded">Logout</button>
   <NuxtLink to="/">Voltar</NuxtLink>
 </template>
 
@@ -33,6 +34,12 @@ definePageMeta({
 })
 
 const { data: userResponse, pending, error } = await useSanctumFetch('/api/v1/users');
+const { logout } = useSanctumAuth()
+
+async function userLogout() {
+  await logout();
+}
+
 
 if (error.value) {
   console.error('Erro na requisição:', error.value)

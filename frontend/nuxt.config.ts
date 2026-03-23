@@ -12,7 +12,7 @@ export default defineNuxtConfig({
     components: 'Components',
     composables: 'Composables',
     plugins: 'Plugins',
-    middleware: 'Middleware'
+    middleware: 'Middleware',
   },
   modules: ['@primevue/nuxt-module', '@pinia/nuxt', 'nuxt-toast', 'nuxt-auth-sanctum'],
   primevue: {
@@ -43,7 +43,7 @@ export default defineNuxtConfig({
         redirect: {
           onLogin: '/user',
           onLogout: '/',
-          onGuestOnly: '/users',
+          onGuestOnly: '/user',
           onAuthOnly: '/',
         },
         redirectIfAuthenticated: true,
@@ -51,7 +51,7 @@ export default defineNuxtConfig({
       apiUrl: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
     }
   },
-  css: ['./app/assets/css/main.css'],
+  css: ['~/assets/css/main.css'],
   vite: {
     server: {
       hmr: {
