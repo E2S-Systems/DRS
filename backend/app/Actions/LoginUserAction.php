@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Models\User;
+use App\Traits\Newable;
 use Illuminate\Support\Facades\Auth;
 
 class LoginUserAction
 {
+    use Newable;
+
     public function execute(string $email, string $password): array
     {
         if (!Auth::attempt(['email' => $email, 'password' => $password])) {

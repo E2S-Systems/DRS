@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Actions\CreateUserAction;
+use App\Http\Requests\Store\UserRequest as StoreRequest;
+use App\Http\Requests\Update\UserRequest as UpdateRequest;
 use App\Http\Resources\StoreUpdateUserResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use App\Actions\CreateUserAction;
+use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
@@ -28,8 +28,8 @@ class UserController extends Controller
             ]);
     }
 
-    public function store(StoreUserRequest $request): StoreUpdateUserResource
-    {   
+    public function store(StoreRequest $request): StoreUpdateUserResource
+    {
         $user = CreateUserAction::new()->execute($request->validated());
 
         return (new StoreUpdateUserResource($user))
@@ -49,7 +49,7 @@ class UserController extends Controller
             ]);
     }
 
-    public function update(UpdateUserRequest $request, User $user): StoreUpdateUserResource
+    public function update(UpdateRequest $request, User $user): StoreUpdateUserResource
     {
         $validated = $request->validated();
         $user->update($validated);
