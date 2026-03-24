@@ -52,9 +52,13 @@ class BranchRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         if ($this->has('name')) {
-            $this->merge([
-                'slug_name' => Str::slug($this->name),
-            ]);
+            $name = $this->input('name');
+
+            if (is_string($name)) {
+                $this->merge([
+                    'slug_name' => Str::slug($name),
+                ]);
+            }
         }
     }
 }

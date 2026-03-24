@@ -18,7 +18,7 @@ class BranchController extends Controller
 
         $branches = Branch::query()
             ->orderBy('name')
-            ->paginate();
+            ->paginate(10);
 
         return BranchResource::collection($branches);
     }
