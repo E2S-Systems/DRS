@@ -1,5 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import Aura from '@primevue/themes/aura';
+import tailwindcss from "@tailwindcss/vite";
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -10,9 +12,9 @@ export default defineNuxtConfig({
     components: 'Components',
     composables: 'Composables',
     plugins: 'Plugins',
-    middleware: 'Middleware'
+    middleware: 'Middleware',
   },
-  modules: ['@primevue/nuxt-module', '@pinia/nuxt'],
+  modules: ['@primevue/nuxt-module', '@pinia/nuxt', 'nuxt-toast', 'nuxt-auth-sanctum'],
   primevue: {
     options: {
       ripple: true,
@@ -28,10 +30,34 @@ export default defineNuxtConfig({
     }
   },
   runtimeConfig: {
+    sanctumBaseUrl: process.env.NUXT_SANCTUM_BASE_URL || 'http://localhost:8000',
     public: {
-      apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://backend:8000/api'
-    }
+      sanctum: {
+        baseUrl: process.env.NUXT_PUBLIC_SANCTUM_BASE_URL || 'http://localhost:8000',
+        endpoints: {
+          csrf: '/sanctum/csrf-cookie',
+          login: '/api/v1/login',
+          logout: '/api/v1/logout',
+          user: '/api/v1/users',
+        },
+        mode: 'token',
+        redirect: {
+          keepRequestedRoute: true,
+          onLogin: '/user',
+          onLogout: '/',
+          onGuestOnly: '/user',
+          onAuthOnly: '/',
+        },
+        redirectIfAuthenticated: true,
+      },
+      apiUrl: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
+    },
+    sanctum: {
+      baseUrl: process.env.NUXT_PUBLIC_SANCTUM_BASE_URL || 'http://localhost:8000',
+      sanctumBaseUrl: process.env.NUXT_SANCTUM_BASE_URL || 'http://localhost:8000',
+    },
   },
+  css: ['~/assets/css/main.css'],
   vite: {
     server: {
       hmr: {
@@ -39,6 +65,9 @@ export default defineNuxtConfig({
         host: 'localhost',
         port: 24678
       }
-    }
+    },
+    plugins: [
+      tailwindcss(),
+    ],
   }
 })
