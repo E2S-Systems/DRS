@@ -30,17 +30,19 @@ export default defineNuxtConfig({
     }
   },
   runtimeConfig: {
+    sanctumBaseUrl: process.env.NUXT_SANCTUM_BASE_URL || 'http://localhost:8000',
     public: {
       sanctum: {
-        baseUrl: 'http://localhost:8000',
+        baseUrl: process.env.NUXT_PUBLIC_SANCTUM_BASE_URL || 'http://localhost:8000',
         endpoints: {
-            csrf: '/sanctum/csrf-cookie',
-            login: 'api/v1/login',
-            logout: 'api/v1/logout',
-            user: '/api/v1/users',
+          csrf: '/sanctum/csrf-cookie',
+          login: '/api/v1/login',
+          logout: '/api/v1/logout',
+          user: '/api/v1/users',
         },
         mode: 'token',
         redirect: {
+          keepRequestedRoute: true,
           onLogin: '/user',
           onLogout: '/',
           onGuestOnly: '/user',
@@ -49,7 +51,11 @@ export default defineNuxtConfig({
         redirectIfAuthenticated: true,
       },
       apiUrl: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
-    }
+    },
+    sanctum: {
+      baseUrl: process.env.NUXT_PUBLIC_SANCTUM_BASE_URL || 'http://localhost:8000',
+      sanctumBaseUrl: process.env.NUXT_SANCTUM_BASE_URL || 'http://localhost:8000',
+    },
   },
   css: ['~/assets/css/main.css'],
   vite: {

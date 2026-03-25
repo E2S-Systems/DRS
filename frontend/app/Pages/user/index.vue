@@ -45,6 +45,4 @@ if (error.value) {
   console.error('Erro na requisição:', error.value)
 }
 
-console.log('Resposta completa:', userResponse.value)
-
 </script>

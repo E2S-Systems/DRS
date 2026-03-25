@@ -16,7 +16,7 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request): JsonResponse
     {
-        $result = (new LoginUserAction())->execute(
+        $result = LoginUserAction::new()->execute(
             email: $request->validated('email'),
             password: $request->validated('password'),
         );
