@@ -101,6 +101,60 @@ Sempre que uma nova entidade (ex: Produto, Fornecedor, Cliente) for desenvolvida
 
 - [ ] **Rotas:** Adicionar o endpoint no routes/api.php, protegendo com o middleware de permissão ou authorize() no Controller.
 
+---
+
+### 2.2. Passo a Passo: Criando um CRUD no Backend
+
+Siga esta sequência de comandos e implementações para criar um CRUD de forma consistente.
+
+**1. Gere a Model, Migration, Factory e Seeder em um único comando:**
+```bash
+php artisan make:model Product -mfs
+```
+Implemente a Migration (com `branch_id` e `softDeletes`), configure o `$fillable`, `$casts` e relacionamentos na Model, e popule a Factory e o Seeder com dados realistas.
+
+**2. Valide as Entidades criadas:**
+```bash
+php artisan db:seed --class=ProductSeeder
+```
+Confirme que os registros foram inseridos corretamente antes de prosseguir.
+
+**3. Crie o Controller API Resource:**
+```bash
+php artisan make:controller ProductController --api
+```
+Implemente os 5 métodos padrão (`index`, `show`, `store`, `update`, `destroy`), delegando a lógica ao Service e retornando sempre um Resource.
+
+**4. Registre as rotas em `routes/api.php`:**
+```php
+Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
+    Route::apiResource('products', \App\Http\Controllers\ProductController::class);
+});
+```
+
+**5. Crie os Form Requests:**
+```bash
+php artisan make:request StoreProductRequest
+php artisan make:request UpdateProductRequest
+```
+Defina `authorize()` com a Policy correspondente e implemente as `rules()` com validações estritas.
+
+**6. Crie o Resource:**
+```bash
+php artisan make:resource ProductResource
+```
+Exponha apenas os campos necessários, ocultando dados sensíveis ou internos.
+
+**7. Configure Permissões e Policy:**
+
+- **7.1.** Adicione as permissões do CRUD em `config/permissions.php`.
+- **7.2.** Vincule as permissões às Roles correspondentes em `config/profile-permissions.php`.
+- **7.3.** Crie a Policy:
+```bash
+php artisan make:policy ProductPolicy --model=Product
+```
+A Policy deve validar tanto a permissão via Spatie quanto o isolamento por `branch_id`.
+
 ### 3.2. Frontend (Nuxt/Vue)
 
 - [ ] **Service de API (services/api/):** Criar a classe que espelha os endpoints gerados no Swagger/Scramble (ex: ProductService.ts).
