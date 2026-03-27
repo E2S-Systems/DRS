@@ -43,7 +43,7 @@ const navigation = [
   {
     section: 'SISTEMA',
     items: [
-      { label: 'Configurações', icon: 'cog', to: '/configuration' },
+      { label: 'Configurações', icon: 'cog', to: '/configuration/users' },
     ]
   }
 ]
