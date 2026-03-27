@@ -23,8 +23,6 @@
 </template>
  
 <script setup lang="ts">
-import LoginBanner from '~/Components/auth/LoginBanner.vue';
-import LoginForm from '~/Components/auth/LoginForm.vue';
 
 definePageMeta({
   layout: 'empty',
