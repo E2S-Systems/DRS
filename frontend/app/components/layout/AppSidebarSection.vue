@@ -1,10 +1,10 @@
 <script setup lang="ts">
-defineProps<{ label: string }>()
+const props = defineProps<{ label: string, modalState: boolean }>()
 </script>
 
 <template>
   <div class="">
-    <span class="text-text-muted tracking-wide m-2">{{ label }}</span>
+    <span class="text-text-muted tracking-wide m-2" v-if="props.modalState">{{ label }}</span>
     <slot />
   </div>
 </template>

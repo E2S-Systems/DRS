@@ -9,7 +9,6 @@ export default defineNuxtConfig({
   dir: {
     pages: 'Pages',
     layouts: 'Layouts',
-    components: 'Components',
     composables: 'Composables',
     plugins: 'Plugins',
     middleware: 'Middleware',
@@ -43,9 +42,9 @@ export default defineNuxtConfig({
         mode: 'token',
         redirect: {
           keepRequestedRoute: true,
-          onLogin: '/user',
+          onLogin: '/dashboard',
           onLogout: '/',
-          onGuestOnly: '/user',
+          onGuestOnly: '/dashboard',
           onAuthOnly: '/',
         },
         redirectIfAuthenticated: true,
@@ -69,5 +68,11 @@ export default defineNuxtConfig({
     plugins: [
       tailwindcss(),
     ],
-  }
+  },
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false,
+    },
+  ]
 })
