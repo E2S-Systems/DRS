@@ -27,10 +27,10 @@ const navigation = computed(() => [
     section: 'SEÇÕES',
     items: [
       { label: 'Usuários',     icon: 'user-plus', to: '/configuration/users' },
-      { label: 'Filiais',      icon: 'building',  to: '/configuration/branches' },
-      { label: 'Permissões',   icon: 'wrench',    to: '/configuration/permissions' },
-      { label: 'Empresa',      icon: 'briefcase', to: '/configuration/company' },
-      { label: 'Integrações',  icon: 'link',      to: '/configuration/integrations' },
+      // { label: 'Filiais',      icon: 'building',  to: '/configuration/branches' },
+      // { label: 'Permissões',   icon: 'wrench',    to: '/configuration/permissions' },
+      // { label: 'Empresa',      icon: 'briefcase', to: '/configuration/company' },
+      // { label: 'Integrações',  icon: 'link',      to: '/configuration/integrations' },
     ]
   }
 ])

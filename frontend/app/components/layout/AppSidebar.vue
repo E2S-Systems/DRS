@@ -34,10 +34,10 @@ const navigation = [
     section: 'PRINCIPAL',
     items: [
       { label: 'Dashboard', icon: 'th-large', to: '/dashboard' },
-      { label: 'Vendas', icon: 'shopping-cart', to: '/vendas' },
-      { label: 'Financeiro', icon: 'wallet', to: '/financeiro' },
-      { label: 'Estoque', icon: 'box', to: '/estoque' },
-      { label: 'RH', icon: 'users', to: '/rh' },
+      // { label: 'Vendas', icon: 'shopping-cart', to: '/vendas' },
+      // { label: 'Financeiro', icon: 'wallet', to: '/financeiro' },
+      // { label: 'Estoque', icon: 'box', to: '/estoque' },
+      // { label: 'RH', icon: 'users', to: '/rh' },
     ]
   },
   {
