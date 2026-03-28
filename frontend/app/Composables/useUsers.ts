@@ -39,7 +39,7 @@ export function useUsers() {
 
   const currentPage = ref(1)
   const search = ref('')
-  const status = ref<'' | true | false>('')
+  const status = ref<'' | boolean>('')
 
   const { data: response, pending, error, refresh } = useFetch<PaginatedResponse<User>>(
     `${apiUrl}users`,
@@ -65,7 +65,7 @@ export function useUsers() {
     currentPage.value = 1
   }
 
-  function onStatusChange(value: '' | true | false) {
+  function onStatusChange(value: '' | boolean) {
     status.value = value
     currentPage.value = 1   
   }
