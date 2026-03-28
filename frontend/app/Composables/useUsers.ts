@@ -11,6 +11,8 @@ interface PaginatedResponse<T> {
     last_page: number
     per_page: number
     total: number
+    from: number
+    to: number
   }
   success: boolean
   message: string
@@ -30,15 +32,25 @@ export function useUsers() {
   const client = useSanctumClient()
   const { public: { apiUrl } } = useRuntimeConfig()
 
+  const currentPage = ref(1)
+
   const { data: response, pending, error, refresh } = useFetch<PaginatedResponse<User>>(
     `${apiUrl}users`,
     {
       $fetch: client,
       default: () => null,
+      server: false,
+
+      query: { page: currentPage },
     }
   )
 
   const data = computed(() => response.value?.data ?? [])
+  const meta = computed(() => response.value?.meta ?? null)
 
-  return { data, pending, error, refresh }
+  function onPageChange(event: { page: number }) {
+    currentPage.value = event.page + 1
+  }
+
+  return { data, meta, pending, error, refresh, onPageChange }
 }

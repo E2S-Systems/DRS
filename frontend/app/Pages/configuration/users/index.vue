@@ -19,9 +19,17 @@
             Failed to load users: {{ error.message }}
         </p>
 
-        <DefaultTable v-else :value="data" :loading="pending">
-            <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" />
-        </DefaultTable>
+        <DefaultTable
+            v-else
+            :value="data"
+            :loading="pending"
+            :columns="columns"
+            :perPage="meta?.per_page ?? 10"
+            :total="meta?.total ?? 0"
+            :from="meta?.from ?? 0"
+            :to="meta?.to ?? 0"
+            @page="onPageChange"
+        />
     </main>
 </template>
 
@@ -30,15 +38,17 @@ definePageMeta({
     layout: 'configuration',
 })
 
-const { data, pending, error } = useUsers();
+import { useUsers } from '~/Composables/useUsers'
+
+const { data, meta, pending, error, onPageChange } = useUsers()
 
 const columns = [
-    { field: 'id', header: 'ID' },
-    { field: 'first_name', header: 'First Name' },
-    { field: 'last_name', header: 'Last Name' },
-    { field: 'email', header: 'Email' },
-    { field: 'role', header: 'Role' },
-    { field: 'is_active', header: 'Active' },
-    { field: 'last_login_at', header: 'Last Login' },
+    { field: 'id',            header: 'ID'             },
+    { field: 'first_name',    header: 'Nome'           },
+    { field: 'last_name',     header: 'Sobrenome'      },
+    { field: 'email',         header: 'E-mail'         },
+    { field: 'role',          header: 'Perfil'         },
+    { field: 'is_active',     header: 'Status'         },
+    { field: 'last_login_at', header: 'Último Acesso'  },
 ]
 </script>
