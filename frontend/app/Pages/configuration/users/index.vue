@@ -16,17 +16,13 @@
         </div>
 
         <div class="flex justify-items-stretch py-8">
-            <Button @click="onStatusChange('')">
-                TODOS ({{ counts?.total ?? 0}})
-            </Button>
-
-            <Button @click="onStatusChange(true)">
-                ATIVOS ({{ counts?.active ?? 0 }})
-            </Button>
-
-            <Button @click="onStatusChange(false)">
-                INATIVOS ({{ counts?.inactive ?? 0}})
-            </Button>
+            <button v-for="tab in tabs" :key="String(tab.value)"
+                class="font-bold w-full border-b-2 border-x-0 border-t-0 py-2 transition-colors" :class="status === tab.value
+                    ? 'border-b-primary text-text'
+                    : 'border-b-transparent text-text-muted hover:border-b-text-hint hover:text-text'
+                    " @click="onStatusChange(tab.value)">
+                {{ tab.label }}({{ tab.count }})
+            </button>
         </div>
 
         <p v-if="error" class="text-red-500">
@@ -66,6 +62,12 @@ definePageMeta({ layout: 'configuration' })
 import { useUsers } from '~/Composables/useUsers'
 
 const { data, meta, counts, pending, error, search, status, onPageChange, onSearch, onStatusChange } = useUsers()
+
+const tabs = computed(() => [
+    { value: '' as const, label: 'TODOS ', count: counts.value?.total ?? 0 },
+    { value: true as const, label: 'ATIVOS ', count: counts.value?.active ?? 0 },
+    { value: false as const, label: 'INATIVOS ', count: counts.value?.inactive ?? 0 },
+])
 
 // considerar extrair para um composable useDateFormat
 function formatDate(dateString: string | null): string {
