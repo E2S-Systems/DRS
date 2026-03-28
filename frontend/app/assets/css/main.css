@@ -32,3 +32,43 @@
   --color-info:          #2D9CDB;
   --color-info-bg:       #001A2E;
 }
+
+/* Estilos referente a elementos do Paginator Component (Primevue)*/
+.p-paginator-page {
+    @apply rounded-none text-sm;
+}
+
+.p-paginator-page.p-paginator-page-selected {
+    @apply bg-primary text-white font-semibold;
+}
+
+/* Estilos referente a elementos do Input Component (Primevue)*/
+
+.p-inputtext {
+  @apply border-b border-y-0 border-x-0 border-text-muted rounded-none;
+}
+
+.p-inputtext:enabled:focus {
+  @apply border-primary bg-transparent;
+}
+
+.p-inputtext.p-variant-filled{
+  @apply bg-transparent;
+}
+
+/* Estilos referente a elementos do Button Component (Primevue)*/
+.p-button{
+  @apply bg-transparent text-text-muted font-bold border-none rounded-none outline-none w-full;
+}
+
+.p-button:not(:disabled):active {
+  @apply bg-transparent border-b-primary border-x-0 border-t-0 text-text outline-none;
+}
+
+.p-button:not(:disabled):not(:active):hover {
+  @apply bg-transparent text-text border-b-primary border-x-0 border-t-0;
+}
+
+.p-button:focus-visible {
+  @apply border-none;
+}
