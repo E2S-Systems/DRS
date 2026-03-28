@@ -1,6 +1,11 @@
 <template>
-    <DataTable dataKey="id" :value="data" :loading="pending" tableStyle="min-width: 50rem">
-        <Column v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" />
+    <DataTable dataKey="id" :value="props.value" :loading="props.loading" tableStyle="min-width: 50rem">
+        <Column
+            v-for="col of props.columns"
+            :key="col.field"
+            :field="col.field"
+            :header="col.header"
+        />
     </DataTable>
 </template>
 
@@ -11,6 +16,8 @@ interface ColumnDefinition {
 }
 
 const props = defineProps<{
-    columns: ColumnDefinition[]
+    value: any[]          
+    loading: boolean    
+    columns?: ColumnDefinition[] 
 }>()
 </script>
