@@ -1,5 +1,6 @@
 <template>
   <div class="flex">
+      <AppSidebar/>
       <ConfigurationSidebar />
   <slot />
   </div>
