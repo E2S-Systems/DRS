@@ -20,18 +20,38 @@ class UserController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', User::class);
-        $users = User::query()
-        ->when(
+        $query = User::query()
+            ->when(
+                $request->filled('search'),
+                fn($q) => $q->where(function ($q) use ($request) {
+                    $q->where('first_name', 'ilike', "%{$request->search}%")
+                        ->orWhere('last_name', 'ilike', "%{$request->search}%")
+                        ->orWhere('email', 'ilike', "%{$request->search}%");
+                })
+            )
+            ->when(
+                $request->filled('status'),
+                fn($q) => $q->where('is_active', $request->status === 'true')
+            );
+
+        $users = $query->paginate($request->get('per_page', 10));
+
+        $baseQuery = User::query()->when(
             $request->filled('search'),
-            fn ($query) => $query->where(function ($q) use ($request) {
+            fn($q) => $q->where(function ($q) use ($request) {
                 $q->where('first_name', 'ilike', "%{$request->search}%")
-                  ->orWhere('last_name',  'ilike', "%{$request->search}%")
-                  ->orWhere('email',      'ilike', "%{$request->search}%");
+                    ->orWhere('last_name', 'ilike', "%{$request->search}%")
+                    ->orWhere('email', 'ilike', "%{$request->search}%");
             })
-        )->paginate(10);
+        );
 
         return UserResource::collection($users)
             ->additional([
+                'counts' => [
+                    'total' => (clone $baseQuery)->count(),
+                    'active' => (clone $baseQuery)->where('is_active', true)->count(),
+                    'inactive' => (clone $baseQuery)->where('is_active', false)->count(),
+                ],
                 'success' => true,
                 'message' => 'Users retrieved successfully!',
             ]);
