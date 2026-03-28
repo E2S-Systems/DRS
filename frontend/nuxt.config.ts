@@ -28,32 +28,28 @@ export default defineNuxtConfig({
       }
     }
   },
-  runtimeConfig: {
-    sanctumBaseUrl: process.env.NUXT_SANCTUM_BASE_URL || 'http://localhost:8000',
-    public: {
-      sanctum: {
-        baseUrl: process.env.NUXT_PUBLIC_SANCTUM_BASE_URL || 'http://localhost:8000',
-        endpoints: {
-          csrf: '/sanctum/csrf-cookie',
-          login: '/api/v1/login',
-          logout: '/api/v1/logout',
-          user: '/api/v1/users',
-        },
-        mode: 'token',
-        redirect: {
-          keepRequestedRoute: true,
-          onLogin: '/dashboard',
-          onLogout: '/',
-          onGuestOnly: '/dashboard',
-          onAuthOnly: '/',
-        },
-        redirectIfAuthenticated: true,
-      },
-      apiUrl: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1',
+  sanctum: {
+    baseUrl: process.env.NUXT_PUBLIC_SANCTUM_BASE_URL || 'http://localhost:8000',
+    mode: 'token',
+    endpoints: {
+      csrf: '/sanctum/csrf-cookie',
+      login: '/api/v1/login',
+      logout: '/api/v1/logout',
+      user: '/api/v1/me', 
     },
-    sanctum: {
-      baseUrl: process.env.NUXT_PUBLIC_SANCTUM_BASE_URL || 'http://localhost:8000',
-      sanctumBaseUrl: process.env.NUXT_SANCTUM_BASE_URL || 'http://localhost:8000',
+    redirect: {
+      keepRequestedRoute: true,
+      onLogin: '/dashboard',
+      onLogout: '/',
+      onGuestOnly: '/dashboard',
+      onAuthOnly: '/',
+    },
+    redirectIfAuthenticated: true,
+  },
+
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api/v1/', 
     },
   },
   css: ['~/assets/css/main.css'],
