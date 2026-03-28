@@ -8,15 +8,13 @@
         paginator
         :rows="props.perPage"
         :totalRecords="props.total"
-        :rowsPerPageOptions="[10, 25, 50]"
+        :paginatorClass="() => 'hover:scale-110'"
         @page="emit('page', $event)"
     >
         <template #header>
             <div class="flex justify-start">
                 <IconField>
-                    <InputIcon>
-                        <i class="pi pi-search" />
-                    </InputIcon>
+                    <InputIcon><i class="pi pi-search" /></InputIcon>
                     <InputText
                         :modelValue="props.search"
                         @update:modelValue="emit('search', $event)"
@@ -32,34 +30,23 @@
             </span>
         </template>
 
-        <Column
-            v-for="col of props.columns"
-            :key="col.field"
-            :field="col.field"
-            :header="col.header"
-        />
+        <slot />
     </DataTable>
 </template>
 
 <script setup lang="ts">
-interface ColumnDefinition {
-    field: string
-    header: string
-}
-
 const props = defineProps<{
     value: any[]
     loading: boolean
-    columns?: ColumnDefinition[]
     perPage: number
     total: number
     from: number
     to: number
-    search: string             
+    search: string
 }>()
 
 const emit = defineEmits<{
     page: [event: { page: number, rows: number }]
-    search: [value: string]   
+    search: [value: string]
 }>()
 </script>
