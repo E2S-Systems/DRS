@@ -10,6 +10,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\LogoutRequest;
 use App\Http\Resources\AuthResource;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 class AuthController extends Controller
@@ -39,5 +40,10 @@ class AuthController extends Controller
         $result = LogoutUserAction::new()->execute($request->user());
 
         return response()->json($result, HttpResponse::HTTP_OK);
+    }
+
+    public function me(Request $request): JsonResponse
+    {
+        return response()->json($request->user());
     }
 }
