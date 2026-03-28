@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Actions\CreateUserAction;
 use App\Http\Requests\Store\UserRequest as StoreRequest;
 use App\Http\Requests\Update\UserRequest as UpdateRequest;
+use Illuminate\Http\Request;
 use App\Http\Resources\StoreUpdateUserResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -16,10 +17,18 @@ use Illuminate\Support\Facades\Gate;
 class UserController extends Controller
 {
 
-    public function index(): AnonymousResourceCollection
+    public function index(Request $request): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', User::class);
-        $users = User::query()->paginate(10);
+        $users = User::query()
+        ->when(
+            $request->filled('search'),
+            fn ($query) => $query->where(function ($q) use ($request) {
+                $q->where('first_name', 'ilike', "%{$request->search}%")
+                  ->orWhere('last_name',  'ilike', "%{$request->search}%")
+                  ->orWhere('email',      'ilike', "%{$request->search}%");
+            })
+        )->paginate(10);
 
         return UserResource::collection($users)
             ->additional([

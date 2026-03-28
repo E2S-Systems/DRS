@@ -33,6 +33,7 @@ export function useUsers() {
   const { public: { apiUrl } } = useRuntimeConfig()
 
   const currentPage = ref(1)
+  const search = ref('')
 
   const { data: response, pending, error, refresh } = useFetch<PaginatedResponse<User>>(
     `${apiUrl}users`,
@@ -41,7 +42,7 @@ export function useUsers() {
       default: () => null,
       server: false,
 
-      query: { page: currentPage },
+      query: { page: currentPage, search: search },
     }
   )
 
@@ -52,5 +53,10 @@ export function useUsers() {
     currentPage.value = event.page + 1
   }
 
-  return { data, meta, pending, error, refresh, onPageChange }
+  function onSearch(value: string) {
+    search.value = value
+    currentPage.value = 1
+  }
+
+  return { data, meta, pending, error, refresh, onPageChange, onSearch, search }
 }
