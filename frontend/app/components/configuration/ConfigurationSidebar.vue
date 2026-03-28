@@ -1,13 +1,13 @@
 <template>
     <aside class="sidebar relative border-r border-border-input h-lvh flex flex-col
-           transition-[width]">
+           transition-[width] max-w-64">
         <div class="shrink-0 px-4 pb-5 pt-14 overflow-hidden
                 transition-all duration-300 ease-in-out">
             <span class="font-bold tracking-wider text-xl block">CONFIGURAÇÕES</span>
             <span class="text-text-muted tracking-widest text-sm block">
                 {{ breadcrumb }}
             </span>
-            <div class="h-1 max-w-1/4 bg-primary mt-2" />
+            <div class="h-1 max-w-1/4 bg-primary mt-2"></div>
         </div>
 
         <nav class="flex flex-col flex-1 overflow-y-auto py-4">
