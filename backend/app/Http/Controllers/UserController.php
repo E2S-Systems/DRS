@@ -31,26 +31,19 @@ class UserController extends Controller
             )
             ->when(
                 $request->filled('status'),
-                fn($q) => $q->where('is_active', $request->status === 'true')
+                fn($q) => $q->where('is_active', $request->boolean('status'))
             );
 
-        $users = $query->paginate($request->get('per_page', 10));
-
-        $baseQuery = User::query()->when(
-            $request->filled('search'),
-            fn($q) => $q->where(function ($q) use ($request) {
-                $q->where('first_name', 'ilike', "%{$request->search}%")
-                    ->orWhere('last_name', 'ilike', "%{$request->search}%")
-                    ->orWhere('email', 'ilike', "%{$request->search}%");
-            })
-        );
+        $perPage = (int) $request->input('per_page', 10);
+        $perPage = max(1, min($perPage, 100));
+        $users = $query->paginate($perPage);
 
         return UserResource::collection($users)
             ->additional([
                 'counts' => [
-                    'total' => (clone $baseQuery)->count(),
-                    'active' => (clone $baseQuery)->where('is_active', true)->count(),
-                    'inactive' => (clone $baseQuery)->where('is_active', false)->count(),
+                    'total' => (clone $query)->count(),
+                    'active' => (clone $query)->where('is_active', true)->count(),
+                    'inactive' => (clone $query)->where('is_active', false)->count(),
                 ],
                 'success' => true,
                 'message' => 'Users retrieved successfully!',
