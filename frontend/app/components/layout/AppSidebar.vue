@@ -48,6 +48,6 @@ const navigation = [
   }
 ]
 
-const { user } = useSanctumAuth()
+useSanctumAuth()
 const modalState = ref(true)
 </script>

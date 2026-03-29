@@ -29,7 +29,7 @@
             Erro ao carregar usuários: {{ error.message }}
         </p>
 
-        <DefaultTable v-else :value="data" :loading="pending" :perPage="meta?.per_page ?? 10" :total="meta?.total ?? 0"
+        <DefaultTable v-else :value="data" :loading="pending" :perPage="meta?.per_page ?? 10" :total="meta?.total ?? 0" model="usuários"
             :from="meta?.from ?? 0" :to="meta?.to ?? 0" :search="search" @page="onPageChange" @search="onSearch">
             <Column field="id" header="ID" />
             <Column field="first_name" header="Nome" />

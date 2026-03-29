@@ -13,7 +13,7 @@
         <nav class="flex flex-col flex-1 overflow-y-auto py-4">
             <ConfigurationSidebarSection v-for="group in navigation" :key="group.section" :label="group.section"
                 class="flex flex-col mb-6">
-                <ConfigurationSidebarItems v-for="item in group.items" :key="item.to" v-bind="item" />
+                <ConfigurationSidebarItem v-for="item in group.items" :key="item.to" v-bind="item" />
             </ConfigurationSidebarSection>
         </nav>
     </aside>

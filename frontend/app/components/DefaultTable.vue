@@ -26,7 +26,7 @@
 
         <template #paginatorstart>
             <span class="text-text-muted text-sm">
-                Mostrando {{ props.from }}–{{ props.to }} de {{ props.total }} usuários
+                Mostrando {{ props.from }}–{{ props.to }} de {{ props.total }} {{props.model}}
             </span>
         </template>
 
@@ -43,6 +43,7 @@ const props = defineProps<{
     from: number
     to: number
     search: string
+    model: string
 }>()
 
 const emit = defineEmits<{
