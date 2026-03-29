@@ -14,7 +14,7 @@ interface PaginatedResponse<T> {
     from: number
     to: number
   }
-  counts: {              
+  counts: {
     total: number
     active: number
     inactive: number
@@ -30,19 +30,21 @@ interface User {
   email: string
   role: string
   is_active: boolean
-  last_login_at: string
+  last_login_at: string | null
 }
 
 export function useUsers() {
   const client = useSanctumClient()
   const { public: { apiUrl } } = useRuntimeConfig()
 
+  const normalizedApiUrl = apiUrl.endsWith('/') ? apiUrl : `${apiUrl}/`
+
   const currentPage = ref(1)
   const search = ref('')
   const status = ref<'' | boolean>('')
 
   const { data: response, pending, error, refresh } = useFetch<PaginatedResponse<User>>(
-    `${apiUrl}users`,
+    `${normalizedApiUrl}users`,
     {
       $fetch: client,
       default: () => null,
@@ -67,8 +69,8 @@ export function useUsers() {
 
   function onStatusChange(value: '' | boolean) {
     status.value = value
-    currentPage.value = 1   
+    currentPage.value = 1
   }
 
-  return { data, meta, pending, error, refresh, search, status, counts, onPageChange, onSearch, onStatusChange  }
+  return { data, meta, pending, error, refresh, search, status, counts, onPageChange, onSearch, onStatusChange }
 }
