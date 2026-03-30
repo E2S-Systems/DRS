@@ -1,6 +1,7 @@
 <template>
   <div class="flex">
-      <AppSidebar />
+      <AppSidebar/>
+      <ConfigurationSidebar class="w-full"/>
   <slot />
   </div>
 </template>
