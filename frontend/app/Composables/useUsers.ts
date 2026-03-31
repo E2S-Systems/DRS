@@ -33,15 +33,36 @@ interface User {
   last_login_at: string | null
 }
 
+interface CreateUserDTO {
+  first_name: string
+  last_name: string
+  email: string
+  role: string
+  password: string
+  is_active: boolean
+}
+
+interface UpdateUserDTO {
+  first_name?: string
+  last_name?: string
+  email?: string
+  role?: string
+  is_active?: boolean
+}
+
 export function useUsers() {
   const client = useSanctumClient()
   const { public: { apiUrl } } = useRuntimeConfig()
 
   const normalizedApiUrl = apiUrl.endsWith('/') ? apiUrl : `${apiUrl}/`
 
-  const currentPage = ref(1)
-  const search = ref('')
-  const status = ref<'' | boolean>('')
+  const currentPage = useState('users.currentPage', () => 1)
+  const search = useState('users.search', () => '')
+  const status = useState<'' | boolean>('users.status', () => '')
+
+  const isCreating = ref(false)
+  const isUpdating = ref(false)
+  const isDeleting = ref(false)
 
   const { data: response, pending, error, refresh } = useFetch<PaginatedResponse<User>>(
     `${normalizedApiUrl}users`,
@@ -49,14 +70,64 @@ export function useUsers() {
       $fetch: client,
       default: () => null,
       server: false,
-
-      query: { page: currentPage, search: search, status: computed(() => status.value === '' ? undefined : status.value), },
+      query: {
+        page: currentPage,
+        search: search,
+        status: computed(() => status.value === '' ? undefined : status.value),
+      },
     }
   )
 
   const data = computed(() => response.value?.data ?? [])
   const meta = computed(() => response.value?.meta ?? null)
   const counts = computed(() => response.value?.counts ?? { total: 0, active: 0, inactive: 0 })
+
+  // --- Mutations ---
+
+  async function createUser(payload: CreateUserDTO) {
+    isCreating.value = true
+    try {
+      await client(`${normalizedApiUrl}users`, {
+        method: 'POST',
+        body: payload,
+      })
+      await refresh()
+    } finally {
+      isCreating.value = false
+    }
+  }
+
+  async function updateUser(id: number, payload: UpdateUserDTO) {
+    isUpdating.value = true
+    try {
+      await client(`${normalizedApiUrl}users/${id}`, {
+        method: 'PUT',
+        body: payload,
+      })
+      await refresh()
+    } finally {
+      isUpdating.value = false
+    }
+  }
+
+  async function deleteUser(id: number) {
+    isDeleting.value = true
+    try {
+      await client(`${normalizedApiUrl}users/${id}`, {
+        method: 'DELETE',
+      })
+
+      if (data.value.length === 1 && currentPage.value > 1) {
+        currentPage.value -= 1
+      }
+
+      await refresh()
+    } finally {
+      isDeleting.value = false
+    }
+  }
+
+  // --- Filters / Pagination ---
 
   function onPageChange(event: { page: number }) {
     currentPage.value = event.page + 1
@@ -72,5 +143,27 @@ export function useUsers() {
     currentPage.value = 1
   }
 
-  return { data, meta, pending, error, refresh, search, status, counts, onPageChange, onSearch, onStatusChange }
+  return {
+    // list state
+    data,
+    meta,
+    counts,
+    pending,
+    error,
+    search,
+    status,
+    // mutation loadings
+    isCreating,
+    isUpdating,
+    isDeleting,
+    // actions
+    refresh,
+    createUser,
+    updateUser,
+    deleteUser,
+    // filter handlers
+    onPageChange,
+    onSearch,
+    onStatusChange,
+  }
 }
