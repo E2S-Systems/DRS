@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Actions\LoginUserAction;
-use App\Actions\LogoutUserAction;
+use App\Actions\User\LoginUserAction;
+use App\Actions\User\LogoutUserAction;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\LogoutRequest;
 use App\Http\Resources\AuthResource;
