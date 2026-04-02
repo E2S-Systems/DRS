@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
 use App\Enums\RoleUser;
@@ -26,6 +28,8 @@ class UserSeeder extends Seeder
         );
         $admin->assignRole(RoleUser::ADMIN->value);
 
-        User::factory(100)->create();
+        User::factory()->count(10)->admin()->create();
+        User::factory()->count(30)->manager()->create();
+        User::factory()->count(60)->employee()->create();
     }
 }

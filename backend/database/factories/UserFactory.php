@@ -1,17 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
+use App\Enums\RoleUser;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
 class UserFactory extends Factory
-{   
+{
     protected static ?string $password;
+
     /**
      * Define the model's default state.
      *
@@ -26,5 +29,49 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'last_login_at' => now()
         ];
+    }
+
+    /**
+     * Indicate that the user should have a specific role assigned.
+     *
+     * @param string|RoleUser $role The role to assign
+     * @return static
+     */
+    public function withRole(string|RoleUser $role): static
+    {
+        return $this->afterCreating(function ($user) use ($role) {
+            $roleName = $role instanceof RoleUser ? $role->value : $role;
+            $user->assignRole($roleName);
+        });
+    }
+
+    /**
+     * Indicate that the user should be an admin.
+     *
+     * @return static
+     */
+    public function admin(): static
+    {
+        return $this->withRole(RoleUser::ADMIN);
+    }
+
+    /**
+     * Indicate that the user should be a manager.
+     *
+     * @return static
+     */
+    public function manager(): static
+    {
+        return $this->withRole(RoleUser::BRANCH_MANAGER);
+    }
+
+    /**
+     * Indicate that the user should be an employee.
+     *
+     * @return static
+     */
+    public function employee(): static
+    {
+        return $this->withRole(RoleUser::BRANCH_EMPLOYEE);
     }
 }
