@@ -45,7 +45,10 @@ class UserController extends Controller
 
     public function show(User $user): UserResource
     {
-        Gate::authorize('view', User::class);
+        Gate::authorize('view', $user);
+        
+        $user->load('roles');
+        
         return (new UserResource($user))
             ->additional([
                 'success' => true,
@@ -57,6 +60,8 @@ class UserController extends Controller
     {
         $validated = $request->validated();
         $user->update($validated);
+        
+        $user->load('roles');
 
         return (new StoreUpdateUserResource($user))
             ->additional([
@@ -67,8 +72,10 @@ class UserController extends Controller
 
     public function destroy(User $user): UserResource
     {
-        Gate::authorize('delete', User::class);
+        Gate::authorize('delete', $user);
         $user->delete();
+        
+        $user->load('roles');
 
         return (new UserResource($user))
             ->additional([
