@@ -29,7 +29,7 @@ class UserRequest extends FormRequest
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email:rfc,dns|max:255|unique:users',
+            'email' => 'required|string|email:rfc|max:255|unique:users',
             'role' => ['required', new Enum(RoleUser::class)],
             'password' => 'required|string|min:8|confirmed:password_confirmation',
         ];

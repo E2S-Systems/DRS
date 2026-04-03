@@ -15,7 +15,7 @@ class UserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('update', User::class);
+        return $this->user()->can('update', $this->route('user'));
     }
 
     /**
@@ -33,6 +33,7 @@ class UserRequest extends FormRequest
             'email' => [
                 'sometimes',
                 'string',
+                'email:rfc',
                 Rule::unique('users')->ignore($user->id),
                 'max:255'
             ],
