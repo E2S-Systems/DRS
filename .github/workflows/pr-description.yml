@@ -1,11 +1,12 @@
+# .github/workflows/pr-description.yml
 name: Auto PR Description
 
 on:
   pull_request:
-    types: [opened] 
+    types: [opened]
 
 permissions:
-  pull-requests: write 
+  pull-requests: write
 
 jobs:
   generate-description:
@@ -18,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20" 
+          node-version: "20"
 
       - name: Read PR template
         id: read-template
@@ -30,8 +31,8 @@ jobs:
 
       - name: Generate and update PR description
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} 
+          # GITHUB_TOKEN is injected automatically — no secrets to configure
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_TEMPLATE: ${{ steps.read-template.outputs.content }}
