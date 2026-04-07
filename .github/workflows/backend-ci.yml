@@ -72,7 +72,7 @@ jobs:
 
       - name: Check for debug artifacts
         run: |
-          if grep -rn --include="*.php" "\bdd(" app/ routes/ || grep -rn --include="*.php" "\bdump(" app/ routes/; then
+          if grep -rEn --include="*.php" '(^|[^[:alnum:]_])dd\(' app/ routes/ || grep -rEn --include="*.php" '(^|[^[:alnum:]_])dump\(' app/ routes/; then
             echo "❌ Found dd() or dump() calls in app/ or routes/"
             exit 1
           fi
