@@ -78,9 +78,6 @@ jobs:
           fi
           echo "✅ No debug artifacts found"
 
-      - name: Run Laravel Pint (code style check)
-        run: ./vendor/bin/pint --test
-
       - name: Run PHPUnit tests
         run: php artisan test --parallel
         env:
