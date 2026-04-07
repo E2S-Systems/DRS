@@ -1,0 +1,38 @@
+name: Auto PR Description
+
+on:
+  pull_request:
+    types: [opened] 
+
+permissions:
+  pull-requests: write 
+
+jobs:
+  generate-description:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20" 
+
+      - name: Read PR template
+        id: read-template
+        run: |
+          TEMPLATE=$(cat docs/pull_request_template.md)
+          echo "content<<EOF" >> $GITHUB_OUTPUT
+          echo "$TEMPLATE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Generate and update PR description
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} 
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TEMPLATE: ${{ steps.read-template.outputs.content }}
+        run: node .github/scripts/generate-pr-description.js
