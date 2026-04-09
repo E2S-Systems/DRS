@@ -15,7 +15,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasRoles, SoftDeletes, HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'first_name',
@@ -26,8 +26,8 @@ class User extends Authenticatable
     ];
 
     protected $casts = [
-        'password'      => 'hashed',
-        'is_active'     => 'boolean',
+        'password' => 'hashed',
+        'is_active' => 'boolean',
         'last_login_at' => 'datetime',
     ];
 

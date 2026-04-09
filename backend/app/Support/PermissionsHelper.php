@@ -9,7 +9,7 @@ class PermissionsHelper
         $handledPermissions = [];
 
         foreach ($arrayOfPermissions as $prefix => $permission) {
-            $newPrefix = (!is_int($prefix))
+            $newPrefix = (! is_int($prefix))
                 ? $globalPrefix.' '.$prefix
                 : $globalPrefix;
 

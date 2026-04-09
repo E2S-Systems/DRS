@@ -10,6 +10,7 @@ use App\Traits\Newable;
 class LogoutUserAction
 {
     use Newable;
+
     public function execute(User $user): array
     {
         $user->currentAccessToken()->delete();

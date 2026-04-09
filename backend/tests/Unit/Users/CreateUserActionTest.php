@@ -108,7 +108,7 @@ test('does not include role in user attributes', function () {
     $this->assertDatabaseHas('users', [
         'email' => 'charlie.wilson@example.com',
     ]);
-    
+
     // Verify no 'role' column exists by checking table structure
     $columns = \Illuminate\Support\Facades\Schema::getColumnListing('users');
     expect($columns)->not->toContain('role');

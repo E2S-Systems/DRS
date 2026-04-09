@@ -12,7 +12,7 @@ enum RoleUser: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ADMIN => 'Administrador Global',
             self::BRANCH_MANAGER => 'Gerente de Filial',
             self::BRANCH_EMPLOYEE => 'Funcionário de Filial',
@@ -22,7 +22,7 @@ enum RoleUser: string
     public static function toSelectOptions(): array
     {
         return array_map(
-            fn(self $role) => [
+            fn (self $role) => [
                 'value' => $role->value,
                 'label' => $role->label(),
             ],

@@ -8,16 +8,15 @@ use App\Actions\User\CreateUserAction;
 use App\Actions\User\ListUsersAction;
 use App\Http\Requests\Store\UserRequest as StoreRequest;
 use App\Http\Requests\Update\UserRequest as UpdateRequest;
-use Illuminate\Http\Request;
 use App\Http\Resources\StoreUpdateUserResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\Gate;
 
 class UserController extends Controller
 {
-
     public function index(Request $request, ListUsersAction $action): AnonymousResourceCollection
     {
         Gate::authorize('viewAny', User::class);
@@ -26,7 +25,7 @@ class UserController extends Controller
 
         return UserResource::collection($result['paginator'])
             ->additional([
-                'counts'  => $result['counts'],
+                'counts' => $result['counts'],
                 'success' => true,
                 'message' => 'Users retrieved successfully!',
             ]);
@@ -46,9 +45,9 @@ class UserController extends Controller
     public function show(User $user): UserResource
     {
         Gate::authorize('view', $user);
-        
+
         $user->load('roles');
-        
+
         return (new UserResource($user))
             ->additional([
                 'success' => true,
@@ -60,7 +59,7 @@ class UserController extends Controller
     {
         $validated = $request->validated();
         $user->update($validated);
-        
+
         $user->load('roles');
 
         return (new StoreUpdateUserResource($user))
@@ -74,7 +73,7 @@ class UserController extends Controller
     {
         Gate::authorize('delete', $user);
         $user->delete();
-        
+
         $user->load('roles');
 
         return (new UserResource($user))

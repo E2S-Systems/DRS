@@ -7,7 +7,7 @@ return [
         'users' => [
             'view',
             'create',
-            'update'
+            'update',
         ],
 
         'branches' => [
@@ -18,14 +18,14 @@ return [
             'view',
             'create',
             'update',
-            'cancel'
-        ]
+            'cancel',
+        ],
     ],
 
     RoleUser::BRANCH_EMPLOYEE->value => [
         'sales' => [
             'view',
-            'create'
-        ]
-    ]
+            'create',
+        ],
+    ],
 ];
