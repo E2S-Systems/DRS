@@ -7,10 +7,10 @@
 # ==============================================================================
 
 .DEFAULT_GOAL := help
-.PHONY: help up up-obs down stop restart build logs logs-backend logs-frontend \
-        art migrate seed fresh tinker bash bash-db bash-bi bash-redis \
-        test test-filter test-coverage lint analyse swagger \
-        npm-install npm-build bi-shell setup
+.PHONY: help up up-obs down down-v stop restart reset build logs logs-backend logs-frontend logs-bi\
+        art migrate seed fresh tinker queue bash bash-db bash-bi bash-redis \
+        test test-filter test-coverage lint lint-dry\
+        npm-install npm-build setup
 
 # ------------------------------------------------------------------------------
 # Variáveis
