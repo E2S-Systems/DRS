@@ -8,12 +8,58 @@
                 </span>
             </div>
             <div>
-                <button class="bg-primary w-60 h-full">
+                <button class="bg-primary w-60 h-full cursor-pointer" @click="visible = true">
                     <i class="pi pi-plus" style="font-size: 0.8rem" />
                     <span class="tracking-wider text-xl">NOVO USUÁRIO</span>
                 </button>
             </div>
         </div>
+
+        <DefaultModal :title="title" :subtitle="subtitle" v-model:visible="visible">
+            <Message v-if="apiError" severity="error" class="mb-4">
+                {{ apiError }}
+            </Message>
+
+            <div class="flex items-center gap-4 mb-4">
+                <label for="first_name" class="font-semibold w-24">PRIMEIRO NOME</label>
+                <InputText id="first_name" v-model="form.first_name" class="flex-auto" type="text" autocomplete="off"
+                    placeholder="Ex.: Rafael" />
+            </div>
+            <div class="flex items-center gap-4 mb-4">
+                <label for="last_name" class="font-semibold w-24">SOBRENOME</label>
+                <InputText id="last_name" v-model="form.last_name" class="flex-auto" type="text" autocomplete="off"
+                    placeholder="Ex.: Silva dos Santos" />
+            </div>
+            <div class="flex items-center gap-4 mb-4">
+                <label for="email" class="font-semibold w-24">EMAIL</label>
+                <InputText id="email" v-model="form.email" class="flex-auto" type="text" autocomplete="off"
+                    placeholder="Ex.: rafael.silva@organizacao.com" />
+            </div>
+            <div class="flex items-center gap-4 mb-8">
+                <label for="password" class="font-semibold w-24">SENHA TEMPORÁRIA</label>
+                <InputText id="password" v-model="form.password" class="flex-auto" type="password" autocomplete="off" />
+            </div>
+            <div class="flex items-center gap-4 mb-8">
+                <label for="password_confirmation" class="font-semibold w-24">CONFIRME A SENHA</label>
+                <InputText id="password_confirmation" v-model="form.password_confirmation" class="flex-auto"
+                    type="password" autocomplete="off" />
+            </div>
+
+            <div class="flex items-center gap-4 mb-8">
+                <Select v-model="form.role" :options="roles" optionLabel="name" optionValue="code"
+                    placeholder="Selecione o papel/cargo" class="w-full md:w-56" />
+            </div>
+
+
+            <div class="flex justify-end gap-2">
+                <Button type="button" severity="secondary" :disabled="isCreating" @click="onCancel">
+                    CANCELAR
+                </Button>
+                <Button type="button" :loading="isCreating" @click="onSubmit">
+                    SALVAR USUÁRIO
+                </Button>
+            </div>
+        </DefaultModal>
 
         <div class="flex justify-items-stretch py-8">
             <button v-for="tab in tabs" :key="String(tab.value)"
@@ -29,8 +75,9 @@
             Erro ao carregar usuários: {{ error.message }}
         </p>
 
-        <DefaultTable v-else :value="data" :loading="pending" :perPage="meta?.per_page ?? 10" :total="meta?.total ?? 0" model="usuários"
-            :from="meta?.from ?? 0" :to="meta?.to ?? 0" :search="search" @page="onPageChange" @search="onSearch">
+        <DefaultTable v-else :value="data" :loading="pending" :perPage="meta?.per_page ?? 10" :total="meta?.total ?? 0"
+            model="usuários" :from="meta?.from ?? 0" :to="meta?.to ?? 0" :search="search" @page="onPageChange"
+            @search="onSearch">
             <Column field="id" header="ID" />
             <Column field="first_name" header="Nome" />
             <Column field="last_name" header="Sobrenome" />
@@ -61,13 +108,79 @@ definePageMeta({ layout: 'configuration' })
 
 import { useUsers } from '~/Composables/useUsers'
 
-const { data, meta, counts, pending, error, search, status, onPageChange, onSearch, onStatusChange } = useUsers()
+const { data, meta, counts, pending, error,
+    search, status,
+    isCreating,
+    createUser,
+    onPageChange, onSearch, onStatusChange } = useUsers()
 
 const tabs = computed(() => [
     { value: '' as const, label: 'TODOS ', count: counts.value?.total ?? 0 },
     { value: true as const, label: 'ATIVOS ', count: counts.value?.active ?? 0 },
     { value: false as const, label: 'INATIVOS ', count: counts.value?.inactive ?? 0 },
 ])
+
+const title = 'Criar'
+const subtitle = 'Crie usuário'
+const visible = ref(false)
+
+const roles = ref([
+    { name: 'Administrador', code: 'admin' },
+    { name: 'Gerente', code: 'manager' },
+    { name: 'Empregado', code: 'employeer' }
+])
+
+const form = reactive({
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
+    role: '',
+    is_active: true
+})
+
+function resetForm() {
+    form.first_name = '',
+        form.last_name = '',
+        form.email = '',
+        form.password = '',
+        form.password_confirmation = '',
+        form.role = '',
+        form.is_active = true
+}
+
+const apiError = ref<string | null>(null)
+
+function onCancel() {
+    visible.value = false
+    resetForm()
+}
+
+async function onSubmit() {
+    apiError.value = null
+
+    try {
+        await createUser({ ...form })
+        onCancel()
+    } catch (err: unknown) {
+        apiError.value = extractApiError(err)
+    }
+}
+
+function extractApiError(err: unknown): string {
+    if (
+        typeof err === 'object' && err !== null && 'data' in err
+    ) {
+        const data = (err as { data: { message?: string; errors?: Record<string, string[]> } }).data
+        if (data?.errors) {
+            return Object.values(data.errors).flat().join(' ')
+        }
+        return data?.message ?? 'Erro inesperado'
+    }
+    return 'Erro inesperado. Tente novamente.'
+}
+
 
 // considerar extrair para um composable useDateFormat
 function formatDate(dateString: string | null): string {
