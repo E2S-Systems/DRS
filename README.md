@@ -9,88 +9,99 @@ O DRS é um ERP SaaS verticalizado de alta performance, projetado especificament
 ## 🏗️ Arquitetura (Monorepo)
 
 Este repositório consolida todo o ecossistema DRS, estruturado sob o padrão de Monorepo para garantir consistência de deploy e versionamento atômico:
+
 ```
 drs-erp/
-├── backend/                # Laravel 11 Application (Core)
+├── backend/                # Laravel 12 Application (Core)
 ├── bi-service/             # Python FastAPI Application (Analytics)
+├── bin/                    # Scripts de automação (setup.sh)
 ├── docs/                   # Project Documentation (Markdown, Diagrams)
-├── frontend/               # Nuxt 3 Application (SPA)
+├── frontend/               # Nuxt 4 Application (SPA)
 ├── infra/                  # Manifestos IaC (Kubernetes, Docker, Prometheus)
-└── docker-compose.yml      # Orquestração local de desenvolvimento
+├── docker-compose.yml      # Orquestração local de desenvolvimento
+└── Makefile                # CLI de comandos do projeto
 ```
 
 ## 🛠️ Stack Tecnológica
 
 - **Apresentação:** Vue.js 3, Nuxt 4, TailwindCSS, Pinia.
-
 - **Regra de Negócio:** PHP 8.4, Laravel 12, Spatie Data/QueryBuilder.
-
 - **Inteligência e Dados:** Python 3.11, FastAPI, Polars, LangChain.
-
 - **Persistência & Mensageria:** PostgreSQL 16, Redis 7, Apache Kafka.
 
 ## 🚀 Como Iniciar (Ambiente de Desenvolvimento)
 
 Para garantir paridade entre os ambientes da equipa, não instale dependências na sua máquina local. Toda a infraestrutura e instalações são orquestradas por dentro dos containers Docker.
 
-### Passo 1: Clonar o repositório
+**Pré-requisitos:** Docker e Git instalados na máquina.
+
+### Setup em 3 comandos
+
 ```bash
-git clone git@github.com:e2s-labs/drs-erp.git
-cd drs-erp
+git clone git@github.com:E2S-Systems/DRS.git
+cd DRS
+make setup
 ```
 
-### Passo 2: Configurar as Variáveis de Ambiente
+O `make setup` cuida de tudo automaticamente: sobe os containers, aguarda os serviços ficarem saudáveis, instala dependências PHP e Node, gera a `APP_KEY`, executa migrations e seeders, e gera a documentação da API.
 
-Crie os ficheiros .env a partir dos exemplos fornecidos em cada serviço.
+> **Credenciais padrão:** `admin@drs.systems` / `drs@123456`
+
+### Resetar o ambiente do zero
+
+Caso precise recriar o ambiente completamente (apaga todos os dados locais):
+
 ```bash
-# Copiar o .env raiz
-cp .env.example .env
-
-# Copiar os .env dos serviços específicos
-cp backend/.env.example backend/.env
-cp frontend/.env.example frontend/.env
-cp bi-service/.env.example bi-service/.env
-```
-
-> (Atenção: Solicite as credenciais sensíveis e passwords dos bancos de dados ao Tech Lead para preencher os ficheiros .env).
-
-### Passo 3: Construir e Levantar a Infraestrutura
-
-O comando abaixo irá baixar as imagens do SO, compilar os Dockerfiles e iniciar os serviços em segundo plano.
-```bash
-docker compose up -d --build
-```
-
->(Nota: O nosso docker-compose.yml está programado para rodar composer install e npm install automaticamente no arranque. No entanto, se for a sua primeira vez ou ocorrer algum erro de sincronização, execute o Passo 4).
-
-### Passo 4: Instalação Manual de Dependências e Setup do Laravel
-
-Execute os comandos abaixo para garantir que o `vendor` e o `node_modules` estão perfeitamente alinhados, e para gerar a chave de criptografia do Laravel.
-```bash
-# 1. Instalar dependências do Backend (PHP)
-docker compose exec backend composer install
-
-# 2. Gerar a App Key do Laravel
-docker compose exec backend php artisan key:generate
-
-# 3. Rodar as Migrations e os Seeders (Criação do Banco de Dados e Permissões Base)
-docker compose exec backend php artisan migrate --seed
-
-# 4. Instalar dependências do Frontend (Node)
-docker compose exec frontend npm install
+make reset
 ```
 
 ## 🌐 Acessos Locais
 
-Após o arranque dos containers, a plataforma estará disponível nos seguintes endereços na sua máquina:
+| Serviço | URL |
+|---|---|
+| Frontend (SPA) | http://localhost:3000 |
+| Backend API | http://localhost:8000 |
+| API Docs (Scramble) | http://localhost:8000/docs/api |
+| BI Service Docs | http://localhost:8001/docs |
+| PostgreSQL | localhost:5434 |
+| Redis | localhost:6379 |
 
-- Frontend (SPA): http://localhost:3000
+Para subir a stack de observabilidade (Prometheus + Grafana):
 
-- Backend API: http://localhost:8000
+```bash
+make up-obs
+```
 
-- Documentação da API (Laravel/Scramble): http://localhost:8000/docs/api
+| Serviço | URL |
+|---|---|
+| Prometheus | http://localhost:9090 |
+| Grafana | http://localhost:3001 |
 
-- Documentação de Dados (Python/FastAPI): http://localhost:8001/docs
+## ⚙️ Comandos Disponíveis
+
+O projeto expõe um CLI unificado via `Makefile`. Para ver todos os comandos disponíveis:
+
+```bash
+make help
+```
+
+Referência rápida dos comandos mais usados:
+
+| Comando            | Descrição |
+|--------------------|---|
+| `make up`          | Inicia os containers |
+| `make down`        | Para e remove os containers |
+| `make stop`        | Para os containers (preserva estado) |
+| `make restart`     | Reinicia os containers |
+| `make reset`       | Destrói tudo e recria o ambiente do zero |
+| `make art q="..."` | Executa um comando Artisan |
+| `make migrate`     | Executa migrations pendentes |
+| `make seed`        | Executa os seeders |
+| `make fresh`       | Recria o banco do zero com seed |
+| `make test`        | Executa a suíte completa de testes |
+| `make bash`        | Abre bash no container do backend |
+| `make setup`       | Configura o projeto do zero |
+| `make help`        | Exibe todos os comandos disponíveis |
 
 ## 📚 Documentação e Diretrizes
 
@@ -101,5 +112,7 @@ Antes de iniciar qualquer desenvolvimento ou abrir um Pull Request, é obrigató
 [📘 Project Governance](docs/project-governance.md)
 
 [📙 Development Guide](docs/development-guide.md)
+
+---
 
 _Propriedade Intelectual - E2S Systems © 2026_
