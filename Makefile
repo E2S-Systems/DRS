@@ -20,8 +20,8 @@ BACKEND    := $(DC) exec backend
 FRONTEND   := $(DC) exec frontend
 BI         := $(DC) exec bi-service
 
-# Filtro opcional para comandos. Uso: make <target> f="example"
-f ?=
+# Filtro opcional para comandos. Uso: make <target> q="example"
+q ?=
 
 # ==============================================================================
 ## Docker
@@ -71,8 +71,8 @@ logs-bi: ## Exibe logs apenas do bi-service
 ## Backend (Laravel)
 # ==============================================================================
 
-art: ## Executa um comando Artisan. Uso: make art f="route:list"
-	$(BACKEND) php artisan $(f)
+art: ## Executa um comando Artisan. Uso: make art q="route:list"
+	$(BACKEND) php artisan $(q)
 
 migrate: ## Executa as migrations pendentes
 	$(BACKEND) php artisan migrate --ansi
@@ -83,15 +83,11 @@ seed: ## Executa os seeders
 fresh: ## Recria o banco do zero com migrations + seed
 	$(BACKEND) php artisan migrate:fresh --seed --ansi
 
-make: ## Cria um novo recurso. Uso: make make f="controller UserController"
-	$(BACKEND) php artisan make:$(f)
+make: ## Cria um novo recurso. Uso: make make q="controller UserController"
+	$(BACKEND) php artisan make:$(q)
 
 tinker: ## Abre o REPL Tinker
 	$(BACKEND) php artisan tinker
-
-swagger: ## Gera a documentação OpenAPI via Scramble
-	$(BACKEND) php artisan scramble:generate
-	@echo "Documentação disponível em: http://localhost:8000/docs/api"
 
 queue: ## Inicia o worker de filas
 	$(BACKEND) php artisan queue:work --ansi
@@ -103,8 +99,8 @@ queue: ## Inicia o worker de filas
 test: ## Executa a suíte completa de testes
 	$(BACKEND) composer test
 
-test-filter: ## Executa testes por nome. Uso: make test-filter f="UserTest"
-	$(BACKEND) php artisan test --filter=$(f)
+test-filter: ## Executa testes por nome. Uso: make test-filter q="UserTest"
+	$(BACKEND) php artisan test --filter=$(q)
 
 test-coverage: ## Gera relatório de cobertura de testes
 	$(BACKEND) php artisan test --coverage
