@@ -78,7 +78,7 @@ jobs:
           fi
           echo "✅ No debug artifacts found"
 
-      - name: Run PHPUnit tests
+      - name: Run Pest tests
         run: php artisan test --parallel
         env:
           DB_CONNECTION: pgsql

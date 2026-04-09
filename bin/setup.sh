@@ -34,7 +34,7 @@ step()    { echo -e "\n${BOLD}▶ $1${RESET}"; }
 echo ""
 echo -e "${BOLD}╔════════════════════════════════════════╗${RESET}"
 echo -e "${BOLD}║        DRS ERP — Project Setup         ║${RESET}"
-echo -e "${BOLD}║           E2S Labs · $(date +%Y)              ║${RESET}"
+echo -e "${BOLD}║          E2S Systems · $(date +%Y)            ║${RESET}"
 echo -e "${BOLD}╚════════════════════════════════════════╝${RESET}"
 echo ""
 
