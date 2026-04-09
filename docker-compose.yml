@@ -14,13 +14,13 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: drs_frontend
+    container_name: frontend
     restart: unless-stopped
     ports:
       - "3000:3000"
     volumes:
       - ./frontend:/app
-      - /app/node_modules
+      - frontend_node_modules:/app/node_modules
     environment:
       - CHOKIDAR_USEPOLLING=true
       - NUXT_PUBLIC_API_BASE=http://localhost:8000/api/v1/
@@ -35,7 +35,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: drs_backend
+    container_name: backend
     restart: unless-stopped
     ports:
       - "8000:80"
@@ -70,7 +70,7 @@ services:
     build:
       context: ./bi-service
       dockerfile: Dockerfile
-    container_name: drs_bi_service
+    container_name: bi_service
     restart: unless-stopped
     ports:
       - "8001:8001"
@@ -92,7 +92,7 @@ services:
   # ----------------------------------------------------------------------------
   postgres:
     image: postgres:16-alpine
-    container_name: drs_postgres
+    container_name: postgres
     restart: unless-stopped
     ports:
       - "5434:5432"
@@ -101,7 +101,7 @@ services:
       POSTGRES_USER: ${DB_USERNAME:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
     volumes:
-      - drs_pg_data:/var/lib/postgresql/data
+      - pg_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres} -d ${DB_DATABASE:-postgres}"]
       interval: 5s
@@ -113,12 +113,12 @@ services:
   # Redis
   redis:
     image: redis:7-alpine
-    container_name: drs_redis
+    container_name: redis
     restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
-      - drs_redis_data:/data
+      - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
@@ -130,7 +130,7 @@ services:
   # Apache Kafka
   kafka:
     image: confluentinc/cp-kafka:7.6.1
-    container_name: drs_kafka
+    container_name: kafka
     restart: unless-stopped
     ports:
       - "9092:9092"
@@ -151,7 +151,8 @@ services:
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
     volumes:
-      - drs_kafka_data:/var/lib/kafka/data
+      - kafka_data:/var/lib/kafka/data
+      - kafka_secrets:/etc/kafka/secrets
     healthcheck:
       test: [ "CMD", "kafka-topics", "--bootstrap-server", "localhost:9092", "--list" ]
       interval: 10s
@@ -165,7 +166,7 @@ services:
   # ----------------------------------------------------------------------------
   prometheus:
     image: prom/prometheus:latest
-    container_name: drs_prometheus
+    container_name: prometheus
     profiles: ["observability"]
     volumes:
       - ./infra/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
@@ -176,7 +177,7 @@ services:
 
   grafana:
     image: grafana/grafana:latest
-    container_name: drs_grafana
+    container_name: grafana
     profiles: ["observability"]
     depends_on:
       - prometheus
@@ -191,11 +192,15 @@ services:
 # DEFINIÇÃO DE VOLUMES E REDES
 # ==============================================================================
 volumes:
-  drs_pg_data:
+  pg_data:
     driver: local
-  drs_redis_data:
+  redis_data:
     driver: local
-  drs_kafka_data:
+  kafka_data:
+    driver: local
+  kafka_secrets:
+    driver: local
+  frontend_node_modules:
     driver: local
 
 networks:
