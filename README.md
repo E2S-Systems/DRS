@@ -39,13 +39,13 @@ Para garantir paridade entre os ambientes da equipa, não instale dependências 
 
 ```bash
 git clone git@github.com:E2S-Systems/DRS.git
-cd drs-erp
+cd DRS
 make setup
 ```
 
 O `make setup` cuida de tudo automaticamente: sobe os containers, aguarda os serviços ficarem saudáveis, instala dependências PHP e Node, gera a `APP_KEY`, executa migrations e seeders, e gera a documentação da API.
 
-> **Credenciais padrão:** `admin@drs.test` / `password`
+> **Credenciais padrão:** `admin@drs.systems` / `drs@123456`
 
 ### Resetar o ambiente do zero
 
@@ -87,21 +87,21 @@ make help
 
 Referência rápida dos comandos mais usados:
 
-| Comando | Descrição |
-|---|---|
-| `make up` | Inicia os containers |
-| `make down` | Para e remove os containers |
-| `make stop` | Para os containers (preserva estado) |
-| `make restart` | Reinicia os containers |
-| `make reset` | Destrói tudo e recria o ambiente do zero |
-| `make art f="..."` | Executa um comando Artisan |
-| `make migrate` | Executa migrations pendentes |
-| `make seed` | Executa os seeders |
-| `make fresh` | Recria o banco do zero com seed |
-| `make test` | Executa a suíte completa de testes |
-| `make bash` | Abre bash no container do backend |
-| `make setup` | Configura o projeto do zero |
-| `make help` | Exibe todos os comandos disponíveis |
+| Comando            | Descrição |
+|--------------------|---|
+| `make up`          | Inicia os containers |
+| `make down`        | Para e remove os containers |
+| `make stop`        | Para os containers (preserva estado) |
+| `make restart`     | Reinicia os containers |
+| `make reset`       | Destrói tudo e recria o ambiente do zero |
+| `make art q="..."` | Executa um comando Artisan |
+| `make migrate`     | Executa migrations pendentes |
+| `make seed`        | Executa os seeders |
+| `make fresh`       | Recria o banco do zero com seed |
+| `make test`        | Executa a suíte completa de testes |
+| `make bash`        | Abre bash no container do backend |
+| `make setup`       | Configura o projeto do zero |
+| `make help`        | Exibe todos os comandos disponíveis |
 
 ## 📚 Documentação e Diretrizes
 
