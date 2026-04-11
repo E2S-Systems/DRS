@@ -121,6 +121,7 @@
 definePageMeta({ layout: 'configuration' })
 
 import { useUsers } from '~/Composables/useUsers'
+import { useFormErrors } from '~/Composables/useFormErrors'
 
 const { data, meta, counts, pending, error,
     search, status,
@@ -164,22 +165,13 @@ function resetForm() {
         form.is_active = true
 }
 
-interface BackendFormErrors {
-    success: boolean
-    message: string
-    errors?: Record<string, string[]>
-    debug?: string
-}
-
-const fieldErrors = reactive<Record<string, string>>({
+const { fieldErrors, apiError, extractErrors } = useFormErrors({
     first_name: '',
     last_name: '',
     email: '',
     password: '',
     role: '',
 })
-
-const apiError = ref<string | null>(null)
 
 function onCancel() {
     visible.value = false
@@ -190,41 +182,10 @@ async function onSubmit() {
     try {
         await createUser({ ...form })
         onCancel()
-    } catch (err: unknown) {
-        extractApiError(err)
+    } catch (err) {
+        extractErrors(err) // tudo encapsulado
     }
 }
-
-function extractApiError(err: unknown): void {
-    // Reseta todos os erros antes de processar
-    apiError.value = null
-    Object.keys(fieldErrors).forEach(key => {
-        fieldErrors[key as keyof typeof fieldErrors] = ''
-    })
-
-    // O ofetch guarda o corpo da resposta em err.data
-    if (typeof err === 'object' && err !== null && 'data' in err) {
-        const data = (err as { data: BackendFormErrors }).data
-
-        // Se vier errors por campo, popula o fieldErrors
-        if (data?.errors) {
-            Object.entries(data.errors).forEach(([field, messages]) => {
-                if (field in fieldErrors) {
-                    // Pega apenas a primeira mensagem do campo
-                    fieldErrors[field as keyof typeof fieldErrors] = messages[0]
-                }
-            })
-            return // Já processou os erros de campo, não precisa do erro geral
-        }
-
-        // Erro genérico (ex: 500, ou mensagem sem campos)
-        apiError.value = data?.message ?? 'Erro inesperado'
-        return
-    }
-
-    apiError.value = 'Erro inesperado. Tente novamente.'
-}
-
 
 // considerar extrair para um composable useDateFormat
 function formatDate(dateString: string | null): string {

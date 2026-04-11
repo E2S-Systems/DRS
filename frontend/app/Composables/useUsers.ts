@@ -39,6 +39,7 @@ interface CreateUserDTO {
   email: string
   role: string
   password: string
+  password_confirmation: string
   is_active: boolean
 }
 
