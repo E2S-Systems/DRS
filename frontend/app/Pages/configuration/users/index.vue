@@ -9,35 +9,44 @@
             </div>
             <div>
                 <button class="bg-primary w-60 h-full cursor-pointer" @click="visible = true">
-                    <i class="pi pi-plus" style="font-size: 0.8rem" />
+                    <i class="pi pi-plus m-2" style="font-size: 0.8rem" />
                     <span class="tracking-wider text-xl">NOVO USUÁRIO</span>
                 </button>
             </div>
         </div>
 
         <DefaultModal :title="title" :subtitle="subtitle" v-model:visible="visible">
-            <Message v-if="apiError" severity="error" class="mb-4">
-                {{ apiError }}
-            </Message>
 
             <div class="flex items-center gap-4 mb-4">
                 <label for="first_name" class="font-semibold w-24">PRIMEIRO NOME</label>
                 <InputText id="first_name" v-model="form.first_name" class="flex-auto" type="text" autocomplete="off"
                     placeholder="Ex.: Rafael" />
+                <small v-if="fieldErrors.first_name" class="text-red-500 mt-1">
+                    {{ fieldErrors.first_name }}
+                </small>
             </div>
             <div class="flex items-center gap-4 mb-4">
                 <label for="last_name" class="font-semibold w-24">SOBRENOME</label>
                 <InputText id="last_name" v-model="form.last_name" class="flex-auto" type="text" autocomplete="off"
                     placeholder="Ex.: Silva dos Santos" />
+                    <small v-if="fieldErrors.last_name" class="text-red-500 mt-1">
+                    {{ fieldErrors.last_name }}
+                </small>
             </div>
             <div class="flex items-center gap-4 mb-4">
                 <label for="email" class="font-semibold w-24">EMAIL</label>
                 <InputText id="email" v-model="form.email" class="flex-auto" type="text" autocomplete="off"
                     placeholder="Ex.: rafael.silva@organizacao.com" />
+                    <small v-if="fieldErrors.email" class="text-red-500 mt-1">
+                    {{ fieldErrors.email }}
+                </small>
             </div>
             <div class="flex items-center gap-4 mb-8">
                 <label for="password" class="font-semibold w-24">SENHA TEMPORÁRIA</label>
                 <InputText id="password" v-model="form.password" class="flex-auto" type="password" autocomplete="off" />
+                <small v-if="fieldErrors.password" class="text-red-500 mt-1">
+                    {{ fieldErrors.password }}
+                </small>
             </div>
             <div class="flex items-center gap-4 mb-8">
                 <label for="password_confirmation" class="font-semibold w-24">CONFIRME A SENHA</label>
@@ -48,6 +57,9 @@
             <div class="flex items-center gap-4 mb-8">
                 <Select v-model="form.role" :options="roles" optionLabel="name" optionValue="code"
                     placeholder="Selecione o papel/cargo" class="w-full md:w-56" />
+                <small v-if="fieldErrors.role" class="text-red-500 mt-1">
+                    {{ fieldErrors.role }}
+                </small>
             </div>
 
 
@@ -100,6 +112,8 @@
                 </template>
             </Column>
         </DefaultTable>
+
+
     </main>
 </template>
 
@@ -150,6 +164,21 @@ function resetForm() {
         form.is_active = true
 }
 
+interface BackendFormErrors {
+    success: boolean
+    message: string
+    errors?: Record<string, string[]>
+    debug?: string
+}
+
+const fieldErrors = reactive<Record<string, string>>({
+    first_name: '',
+    last_name: '',
+    email: '',
+    password: '',
+    role: '',
+})
+
 const apiError = ref<string | null>(null)
 
 function onCancel() {
@@ -158,27 +187,42 @@ function onCancel() {
 }
 
 async function onSubmit() {
-    apiError.value = null
-
     try {
         await createUser({ ...form })
         onCancel()
     } catch (err: unknown) {
-        apiError.value = extractApiError(err)
+        extractApiError(err)
     }
 }
 
-function extractApiError(err: unknown): string {
-    if (
-        typeof err === 'object' && err !== null && 'data' in err
-    ) {
-        const data = (err as { data: { message?: string; errors?: Record<string, string[]> } }).data
+function extractApiError(err: unknown): void {
+    // Reseta todos os erros antes de processar
+    apiError.value = null
+    Object.keys(fieldErrors).forEach(key => {
+        fieldErrors[key as keyof typeof fieldErrors] = ''
+    })
+
+    // O ofetch guarda o corpo da resposta em err.data
+    if (typeof err === 'object' && err !== null && 'data' in err) {
+        const data = (err as { data: BackendFormErrors }).data
+
+        // Se vier errors por campo, popula o fieldErrors
         if (data?.errors) {
-            return Object.values(data.errors).flat().join(' ')
+            Object.entries(data.errors).forEach(([field, messages]) => {
+                if (field in fieldErrors) {
+                    // Pega apenas a primeira mensagem do campo
+                    fieldErrors[field as keyof typeof fieldErrors] = messages[0]
+                }
+            })
+            return // Já processou os erros de campo, não precisa do erro geral
         }
-        return data?.message ?? 'Erro inesperado'
+
+        // Erro genérico (ex: 500, ou mensagem sem campos)
+        apiError.value = data?.message ?? 'Erro inesperado'
+        return
     }
-    return 'Erro inesperado. Tente novamente.'
+
+    apiError.value = 'Erro inesperado. Tente novamente.'
 }
 
 
