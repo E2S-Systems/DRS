@@ -44,6 +44,9 @@ class UserRequest extends FormRequest
     public function messages()
     {
         return [
+            'first_name.string' => 'O campo nome deve ser um texto.',
+            'last_name.string' => 'O campo sobrenome deve ser um texto.',
+            'email.string' => 'O campo email deve ser um texto.',
             'first_name.required' => 'O campo nome é obrigatório.',
             'last_name.required' => 'O campo sobrenome é obrigatório.',
             'email.required' => 'O campo email é obrigatório.',
