@@ -8,6 +8,7 @@ export interface User {
   role: string
   is_active: boolean
   last_login_at: string | null
+  created_by: string
 }
 
 export interface CreateUserDTO {

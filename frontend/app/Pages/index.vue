@@ -28,4 +28,8 @@ definePageMeta({
   layout: 'empty',
   middleware: ['sanctum:guest'],
 })
+
+useHead({
+    title: "Login"
+})
 </script>
