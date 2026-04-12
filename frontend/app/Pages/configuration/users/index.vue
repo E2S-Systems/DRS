@@ -118,7 +118,7 @@
             Erro ao carregar usuários: {{ error.message }}
         </p>
 
-        
+
         <DefaultTable v-else :value="data" :loading="pending" :perPage="meta?.per_page ?? 10" :total="meta?.total ?? 0"
             model="usuários" :from="meta?.from ?? 0" :to="meta?.to ?? 0" :search="search" @page="onPageChange"
             @search="onSearch">
@@ -141,14 +141,15 @@
             <Column field="actions" header="Ações">
                 <template #body="{ data: user }">
                     <div class="flex items-center gap-2">
-                        <Button icon="pi pi-pen-to-square" />
+                        <Button @click="onEditClick(user)" icon="pi pi-pen-to-square"
+                            v-tooltip.top="'Editar usuário'" />
                         <Button @click="confirmDelete(user)" icon="pi pi-trash" v-tooltip.top="'Excluir usuário'" />
                     </div>
                 </template>
             </Column>
         </DefaultTable>
 
-
+        <EditUserModal v-model:visible="editModalVisible" :user="selectedUser" @saved="refresh()" />
     </main>
 </template>
 
@@ -247,6 +248,13 @@ const confirmDelete = (user: User) => {
         reject: () => { selectedUser.value = null }
     });
 };
+
+const editModalVisible = ref(false)
+
+const onEditClick = (user: User) => {
+    selectedUser.value = user
+    editModalVisible.value = true
+}
 
 // considerar extrair para um composable useDateFormat
 function formatDate(dateString: string | null): string {
