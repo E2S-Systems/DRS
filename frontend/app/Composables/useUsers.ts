@@ -45,7 +45,7 @@ export function useUsers() {
       })
       toast.success({
         title: 'Usuário criado com sucesso!',
-        description: `Confirmação da criação de usuário`,
+        message: `Confirmação da criação de usuário`,
         icon: 'pi pi-check',
         position: 'topCenter',
       })
@@ -64,7 +64,7 @@ export function useUsers() {
       })
       toast.success({
         title: 'Usuário atualizado com sucesso!',
-        description: `Confirmação da atualização de usuário`,
+        message: `Confirmação da atualização de usuário`,
         icon: 'pi pi-check',
         position: 'topCenter',
       })
@@ -87,7 +87,7 @@ export function useUsers() {
 
       toast.success({
         title: 'Usuário deletado com sucesso!',
-        description: `Confirmação da exclusão de usuário`,
+        message: `Confirmação da exclusão de usuário`,
         icon: 'pi pi-check',
         position: 'topCenter',
       })

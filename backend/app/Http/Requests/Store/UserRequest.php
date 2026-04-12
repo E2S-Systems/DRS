@@ -48,6 +48,8 @@ class UserRequest extends FormRequest
             'password.required' => 'O campo senha é obrigatório.',
             'password.min' => 'A senha deve ter pelo menos 8 caracteres.',
             'password.confirmed' => 'A confirmação da senha não corresponde.',
+            'password_confirmation.required' => 'O campo de confirmação de senha é obrigatório.',
+            'password_confirmation.confirmed' => 'A confirmação da senha não corresponde.',
         ];
     }
 }
