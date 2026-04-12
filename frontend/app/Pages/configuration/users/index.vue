@@ -62,11 +62,12 @@
                 </div>
 
                 <div class="flex flex-col gap-1">
-                    <label for="password_confirmation" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
+                    <label for="password_confirmation"
+                        class="text-xs font-semibold tracking-widest uppercase text-surface-400">
                         Confirmação de Senha
                     </label>
-                    <InputText id="password_confirmation" v-model="form.password_confirmation" type="password" autocomplete="off"
-                        placeholder="Mín. 8 caracteres" class="w-full" />
+                    <InputText id="password_confirmation" v-model="form.password_confirmation" type="password"
+                        autocomplete="off" placeholder="Mín. 8 caracteres" class="w-full" />
                     <small v-if="fieldErrors.password" class="text-red-500">
                         {{ fieldErrors.password }}
                     </small>
@@ -117,6 +118,7 @@
             Erro ao carregar usuários: {{ error.message }}
         </p>
 
+        
         <DefaultTable v-else :value="data" :loading="pending" :perPage="meta?.per_page ?? 10" :total="meta?.total ?? 0"
             model="usuários" :from="meta?.from ?? 0" :to="meta?.to ?? 0" :search="search" @page="onPageChange"
             @search="onSearch">
@@ -135,10 +137,13 @@
                     </span>
                 </template>
             </Column>
-
-            <Column field="last_login_at" header="Último Acesso">
+            <ConfirmDialog :draggable="false" :blockScroll="true" />
+            <Column field="actions" header="Ações">
                 <template #body="{ data: user }">
-                    {{ formatDate(user.last_login_at) }}
+                    <div class="flex items-center gap-2">
+                        <Button icon="pi pi-pen-to-square" />
+                        <Button @click="confirmDelete(user)" icon="pi pi-trash" v-tooltip.top="'Excluir usuário'" />
+                    </div>
                 </template>
             </Column>
         </DefaultTable>
@@ -153,10 +158,13 @@ definePageMeta({ layout: 'configuration' })
 import { useUsers } from '~/Composables/useUsers'
 import { useFormErrors } from '~/Composables/useFormErrors'
 
+const confirm = useConfirm();
+
 const { data, meta, counts, pending, error,
     search, status,
     isCreating,
     createUser,
+    deleteUser,
     onPageChange, onSearch, onStatusChange } = useUsers()
 
 const tabs = computed(() => [
@@ -216,6 +224,29 @@ async function onSubmit() {
         extractErrors(err) // tudo encapsulado
     }
 }
+
+const selectedUser = ref<User | null>(null)
+
+const confirmDelete = (user: User) => {
+    selectedUser.value = user
+    confirm.require({
+        message: `Você deseja mesmo excluir o usuário ${user.first_name}?`,
+        header: 'CONFIRMAR EXCLUSÃO',
+        icon: 'pi pi-exclamation-triangle',
+        rejectLabel: 'CANCELAR',
+        rejectProps: {
+            label: 'CANCELAR',
+            severity: 'secondary',
+            outlined: true
+        },
+        acceptProps: {
+            label: 'EXCLUIR',
+            severity: 'danger'
+        },
+        accept: () => deleteUser(user.id),
+        reject: () => { selectedUser.value = null }
+    });
+};
 
 // considerar extrair para um composable useDateFormat
 function formatDate(dateString: string | null): string {
