@@ -1,3 +1,5 @@
+import type { User } from '~/types/user'
+
 interface PaginatedResponse<T> {
   data: T[]
   links: {
@@ -23,16 +25,6 @@ interface PaginatedResponse<T> {
   message: string
 }
 
-interface User {
-  id: number
-  first_name: string
-  last_name: string
-  email: string
-  role: string
-  is_active: boolean
-  last_login_at: string | null
-}
-
 interface CreateUserDTO {
   first_name: string
   last_name: string
@@ -49,6 +41,7 @@ interface UpdateUserDTO {
   email?: string
   role?: string
   is_active?: boolean
+  password?: string
 }
 
 export function useUsers() {
