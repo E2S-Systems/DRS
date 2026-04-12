@@ -158,6 +158,7 @@ definePageMeta({ layout: 'configuration' })
 
 import { useUsers } from '~/Composables/useUsers'
 import { useFormErrors } from '~/Composables/useFormErrors'
+import type { User } from '~/types/user';
 
 const confirm = useConfirm();
 
