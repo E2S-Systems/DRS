@@ -52,11 +52,23 @@
                 </label>
                 <InputText id="edit_password" v-model="form.password" type="password" autocomplete="off"
                     placeholder="Mín. 8 caracteres / opcional" class="w-full" />
-                <small class="text-surface-400 text-xs">
+                <small class="text-surface-400 text-xs text-text-muted">
                     Deixe em branco para manter a senha atual.
                 </small>
                 <small v-if="fieldErrors.password" class="text-red-500">
                     {{ fieldErrors.password }}
+                </small>
+            </div>
+            
+            <div class="flex flex-col gap-1">
+                <label for="edit_password_confirmation"
+                    class="text-xs font-semibold tracking-widest uppercase text-surface-400">
+                    Confirmar Nova Senha
+                </label>
+                <InputText id="edit_password_confirmation" v-model="form.password_confirmation" type="password"
+                    autocomplete="off" placeholder="Repita a nova senha" class="w-full" />
+                <small v-if="fieldErrors.password_confirmation" class="text-red-500">
+                    {{ fieldErrors.password_confirmation }}
                 </small>
             </div>
         </div>
@@ -71,7 +83,6 @@
 <script setup lang="ts">
 import type { User } from '~/types/user'
 import { useUsers } from '~/Composables/useUsers';
-const toast = useToast()
 
 const props = defineProps<{
     visible: boolean
@@ -102,6 +113,7 @@ interface EditForm {
     email: string
     role: string
     password: string
+    password_confirmation: string
 }
 
 const form = reactive<EditForm>({
@@ -110,29 +122,64 @@ const form = reactive<EditForm>({
     email: '',
     role: '',
     password: '',
+    password_confirmation: '',
 })
 
 const fieldErrors = reactive<Partial<Record<keyof EditForm, string>>>({})
 
-// Popula o form sempre que o user mudar (novo usuário selecionado para edição)
-// immediate: true garante que popula na primeira abertura também
+const clearFieldErrors = () => {
+    Object.keys(fieldErrors).forEach((key) => {
+        delete fieldErrors[key as keyof EditForm]
+    })
+}
+const resetForm = () => {
+    form.first_name = ''
+    form.last_name = ''
+    form.email = ''
+    form.role = ''
+    form.password = ''
+    form.password_confirmation = ''
+    clearFieldErrors()
+}
+const populateForm = (user: User) => {
+    form.first_name = user.first_name
+    form.last_name = user.last_name
+    form.email = user.email
+    form.role = user.role
+    form.password = ''
+    form.password_confirmation = ''
+    clearFieldErrors()
+}
+
 watch(
     () => props.user,
     (user: User) => {
-        if (!user) return
-
-        form.first_name = user.first_name
-        form.last_name = user.last_name
-        form.email = user.email
-        form.role = user.role
-        form.password = ''
-
-        Object.keys(fieldErrors).forEach((key) => {
-            delete fieldErrors[key as keyof EditForm]
-        })
+        if (!props.visible) return
+        if (!user) {
+            resetForm()
+            return
+        }
+        populateForm(user)
     },
     { immediate: true }
 )
+// Reabre corretamente o modal mesmo para o mesmo usuário (mesma referência).
+watch(
+    () => props.visible,
+    (isVisible: boolean) => {
+        if (isVisible) {
+            if (props.user) {
+                populateForm(props.user)
+            } else {
+                resetForm()
+            }
+            return
+        }
+        resetForm()
+    },
+    { immediate: true }
+)
+
 const onCancel = () => {
     visible.value = false
 }
@@ -147,6 +194,7 @@ const onSubmit = async () => {
             email: form.email,
             role: form.role,
             ...(form.password ? { password: form.password } : {}),
+            ...(form.password_confirmation ? { password_confirmation: form.password_confirmation} : {}),
         }
 
         await updateUser(props.user.id, payload)
