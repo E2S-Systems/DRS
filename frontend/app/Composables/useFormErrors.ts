@@ -4,7 +4,6 @@ export function useFormErrors<T extends Record<string, string>>(fields: T) {
 
     function extractErrors(err: unknown): void {
         apiError.value = null
-        // Reseta todos os campos
         Object.keys(fieldErrors).forEach(key => fieldErrors[key] = '')
 
         if (typeof err === 'object' && err !== null && 'data' in err) {

@@ -16,61 +16,91 @@
         </div>
 
         <DefaultModal :title="title" :subtitle="subtitle" v-model:visible="visible">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mb-6">
+                <div class="flex flex-col gap-1">
+                    <label for="first_name" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
+                        Primeiro Nome
+                    </label>
+                    <InputText id="first_name" v-model="form.first_name" type="text" autocomplete="off"
+                        placeholder="Ex.: Rafael" class="w-full" />
+                    <small v-if="fieldErrors.first_name" class="text-red-500">
+                        {{ fieldErrors.first_name }}
+                    </small>
+                </div>
 
-            <div class="flex items-center gap-4 mb-4">
-                <label for="first_name" class="font-semibold w-24">PRIMEIRO NOME</label>
-                <InputText id="first_name" v-model="form.first_name" class="flex-auto" type="text" autocomplete="off"
-                    placeholder="Ex.: Rafael" />
-                <small v-if="fieldErrors.first_name" class="text-red-500 mt-1">
-                    {{ fieldErrors.first_name }}
-                </small>
-            </div>
-            <div class="flex items-center gap-4 mb-4">
-                <label for="last_name" class="font-semibold w-24">SOBRENOME</label>
-                <InputText id="last_name" v-model="form.last_name" class="flex-auto" type="text" autocomplete="off"
-                    placeholder="Ex.: Silva dos Santos" />
-                    <small v-if="fieldErrors.last_name" class="text-red-500 mt-1">
-                    {{ fieldErrors.last_name }}
-                </small>
-            </div>
-            <div class="flex items-center gap-4 mb-4">
-                <label for="email" class="font-semibold w-24">EMAIL</label>
-                <InputText id="email" v-model="form.email" class="flex-auto" type="text" autocomplete="off"
-                    placeholder="Ex.: rafael.silva@organizacao.com" />
-                    <small v-if="fieldErrors.email" class="text-red-500 mt-1">
-                    {{ fieldErrors.email }}
-                </small>
-            </div>
-            <div class="flex items-center gap-4 mb-8">
-                <label for="password" class="font-semibold w-24">SENHA TEMPORÁRIA</label>
-                <InputText id="password" v-model="form.password" class="flex-auto" type="password" autocomplete="off" />
-                <small v-if="fieldErrors.password" class="text-red-500 mt-1">
-                    {{ fieldErrors.password }}
-                </small>
-            </div>
-            <div class="flex items-center gap-4 mb-8">
-                <label for="password_confirmation" class="font-semibold w-24">CONFIRME A SENHA</label>
-                <InputText id="password_confirmation" v-model="form.password_confirmation" class="flex-auto"
-                    type="password" autocomplete="off" />
+                <div class="flex flex-col gap-1">
+                    <label for="last_name" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
+                        Sobrenome
+                    </label>
+                    <InputText id="last_name" v-model="form.last_name" type="text" autocomplete="off"
+                        placeholder="Ex.: Silva dos Santos" class="w-full" />
+                    <small v-if="fieldErrors.last_name" class="text-red-500">
+                        {{ fieldErrors.last_name }}
+                    </small>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="email" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
+                        E-mail
+                    </label>
+                    <InputText id="email" v-model="form.email" type="text" autocomplete="off"
+                        placeholder="Ex.: rafael.silva@gmail.com" class="w-full" />
+                    <small v-if="fieldErrors.email" class="text-red-500">
+                        {{ fieldErrors.email }}
+                    </small>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="password" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
+                        Senha Temporária
+                    </label>
+                    <InputText id="password" v-model="form.password" type="password" autocomplete="off"
+                        placeholder="Mín. 8 caracteres" class="w-full" />
+                    <small v-if="fieldErrors.password" class="text-red-500">
+                        {{ fieldErrors.password }}
+                    </small>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="password_confirmation" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
+                        Confirmação de Senha
+                    </label>
+                    <InputText id="password_confirmation" v-model="form.password_confirmation" type="password" autocomplete="off"
+                        placeholder="Mín. 8 caracteres" class="w-full" />
+                    <small v-if="fieldErrors.password" class="text-red-500">
+                        {{ fieldErrors.password }}
+                    </small>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="role" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
+                        Perfil de Acesso
+                    </label>
+                    <Select id="role" v-model="form.role" :options="roles" optionLabel="name" optionValue="code"
+                        placeholder="Selecione o perfil" class="w-full" />
+                    <small v-if="fieldErrors.role" class="text-red-500">
+                        {{ fieldErrors.role }}
+                    </small>
+                </div>
+
+                <div class="flex flex-col gap-1">
+                    <label for="branch" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
+                        Filial
+                    </label>
+                    <Select id="branch" v-model="form.branch" :options="branches" optionLabel="name" optionValue="code"
+                        placeholder="Selecione a filial" class="w-full" />
+                    <small v-if="fieldErrors.branch" class="text-red-500">
+                        {{ fieldErrors.branch }}
+                    </small>
+                </div>
+
             </div>
 
-            <div class="flex items-center gap-4 mb-8">
-                <Select v-model="form.role" :options="roles" optionLabel="name" optionValue="code"
-                    placeholder="Selecione o papel/cargo" class="w-full md:w-56" />
-                <small v-if="fieldErrors.role" class="text-red-500 mt-1">
-                    {{ fieldErrors.role }}
-                </small>
+            <div class="flex justify-end gap-3">
+                <Button type="button" severity="secondary" :disabled="isCreating" @click="onCancel" label="CANCELAR" />
+                <Button type="button" :loading="isCreating" @click="onSubmit" label="SALVAR USUÁRIO" />
             </div>
 
-
-            <div class="flex justify-end gap-2">
-                <Button type="button" severity="secondary" :disabled="isCreating" @click="onCancel">
-                    CANCELAR
-                </Button>
-                <Button type="button" :loading="isCreating" @click="onSubmit">
-                    SALVAR USUÁRIO
-                </Button>
-            </div>
         </DefaultModal>
 
         <div class="flex justify-items-stretch py-8">
@@ -135,8 +165,7 @@ const tabs = computed(() => [
     { value: false as const, label: 'INATIVOS ', count: counts.value?.inactive ?? 0 },
 ])
 
-const title = 'Criar'
-const subtitle = 'Crie usuário'
+const title = 'CRIAR USUÁRIO'
 const visible = ref(false)
 
 const roles = ref([
@@ -165,7 +194,7 @@ function resetForm() {
         form.is_active = true
 }
 
-const { fieldErrors, apiError, extractErrors } = useFormErrors({
+const { fieldErrors, apiError, extractErrors, resetErrors } = useFormErrors({
     first_name: '',
     last_name: '',
     email: '',
@@ -175,6 +204,7 @@ const { fieldErrors, apiError, extractErrors } = useFormErrors({
 
 function onCancel() {
     visible.value = false
+    resetErrors()
     resetForm()
 }
 
