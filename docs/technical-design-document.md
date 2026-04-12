@@ -5,7 +5,7 @@
 
 ## 1. Visão Executiva
 
-O **D.R.S** (Data Resource System) é uma plataforma SaaS verticalizada voltada ao varejo de comunicação visual. O objetivo deste documento é estabelecer as diretrizes arquiteturais, stack tecnológica e padrões de projeto que guiarão o desenvolvimento interno, garantindo alinhamento técnico, escalabilidade e manutenibilidade do código.
+O **D.R.S** (Dynamic Resource System) é uma plataforma SaaS verticalizada voltada ao varejo de comunicação visual. O objetivo deste documento é estabelecer as diretrizes arquiteturais, stack tecnológica e padrões de projeto que guiarão o desenvolvimento interno, garantindo alinhamento técnico, escalabilidade e manutenibilidade do código.
 
 ### 1.1 Objetivos de Engenharia
 
@@ -39,11 +39,11 @@ Como o sistema é operado por uma matriz com múltiplas filiais, adotamos o padr
 
 ### 3.1. Estrutura de Base de Dados
 
-Todas as tabelas transacionais e operacionais (Vendas, Estoque, Funcionários) devem possuir as colunas:
+Para entidades transacionais com isolamento por filial, o modelo deve considerar:
 
 - `id` (UUID ou BigInt).
 
-- `branch_id` (Chave Estrangeira para a tabela `branches` - Filiais).
+- `branch_id` (Chave estrangeira para `branches`).
 
 - `created_at` / `updated_at`.
 
@@ -51,30 +51,30 @@ Todas as tabelas transacionais e operacionais (Vendas, Estoque, Funcionários) d
 
 ### 3.2. Estratégia de Isolamento
 
-O isolamento será feito via **Contextual Scopes** aliado ao RBAC (`spatie/laravel-permission`):
+O isolamento, quando aplicado ao domínio, deve ser feito via **Contextual Scopes** aliado ao RBAC (`spatie/laravel-permission`):
 
-- **Utilizadores Locais (Vendedores, Gerentes de Loja):** Ao realizar uma consulta, o sistema valida se o utilizador possui a permissão `view-all-branches`. Caso não possua, o Backend automaticamente acopla o filtro `->where('branch_id', auth()->user()->current_branch_id)` na _Query_.
+- **Utilizadores Locais (Vendedores, Gerentes de Loja):** consultar apenas dados da filial permitida no contexto de autorização.
 
-- **Utilizadores Globais (Diretoria, Backoffice):** Possuem a permissão `view-all-branches`. O sistema ignora o filtro de `branch_id`, permitindo agregações e visões gerais de lucro/vendas.
+- **Utilizadores Globais (Diretoria, Backoffice):** podem ter visão consolidada quando houver permissão de escopo global.
 
-- **Header de Contexto:** O Frontend deve enviar o Header HTTP `X-Branch-Id` em todas as requisições para informar em qual filial o utilizador está a operar naquele momento (útil para funcionários que cobrem turnos em lojas diferentes).
+- **Header de Contexto:** `X-Branch-Id` pode ser usado para explicitar contexto de filial quando o fluxo exigir.
 
 
 ## 4. Stack Tecnológica
 
 ### 4.1 Frontend
 
-- **Nuxt 3 (Vue 3 + TypeScript):** Framework base para a SPA, provendo roteamento e estruturação.
+- **Nuxt 4 (Vue 3 + TypeScript):** Framework base para a SPA.
 
 - **PrimeVue (Unstyled) + Tailwind CSS:** Sistema de componentes de UI complexos (DataTables, Trees) com estilização delegada ao Tailwind.
 
 - **Pinia:** Gestão de estado global.
 
-- **Ofech:** Cliente HTTP padrão.
+- **nuxt-auth-sanctum + useFetch:** base atual para autenticação e consumo HTTP.
 
 ### 4.2 Backend Core
 
-- **Laravel 11 (PHP 8.3):** Framework base para a API REST transacional.
+- **Laravel 12 (PHP 8.4 em runtime Docker; `^8.2` no Composer):** framework base para a API REST transacional.
 
 - **Sanctum:** Autenticação Stateless via Tokens.
 
@@ -84,15 +84,9 @@ O isolamento será feito via **Contextual Scopes** aliado ao RBAC (`spatie/larav
 
     - `laravel-query-builder`: Padronização de filtros e ordenações de API.
 
-    - `laravel-data`: Transferência de dados fortemente tipada (DTOs).
-
     - `laravel-permission`: Controlo de Acesso Baseado em Papéis (RBAC).
 
-    - `laravel-activitylog`: Auditoria de mutações de base de dados.
-
     - `laravel-medialibrary`: Processamento e associação de ficheiros/mídias.
-
-    - `laravel-health`: Exposição de health checks da aplicação.
 
 ### 4.3 Data Intelligence Service
 
@@ -128,13 +122,13 @@ A infraestrutura é tratada como código (IaC) e projetada para resiliência e m
 
 **Atenção Desenvolvedores:** Consultem as documentações oficiais para entender as best practices de cada ferramenta antes da implementação.
 
-- Nuxt 3 Docs | PrimeVue Docs | Tailwind CSS
+- [Nuxt 4 Docs](https://nuxt.com/docs/4.x/getting-started/introduction) | [PrimeVue Docs](https://primevue.org/) | [Tailwind CSS Docs](https://tailwindcss.com/docs)
 
-- Laravel 11 Docs | Spatie Open Source | Scramble
+- [Laravel 12 Docs](https://laravel.com/docs/12.x) | [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission) | [Spatie Laravel Query Builder](https://spatie.be/docs/laravel-query-builder) | [Spatie Laravel Media Library](https://spatie.be/docs/laravel-medialibrary) | [Scramble Docs](https://scramble.dedoc.co/)
 
-- FastAPI Docs | Polars User Guide | LangChain
+- [FastAPI Docs](https://fastapi.tiangolo.com/) | [Pandas Docs](https://pandas.pydata.org/docs/) | [NumPy Docs](https://numpy.org/doc/)
 
-- PostgreSQL | Apache Kafka | Kubernetes
+- [PostgreSQL Docs](https://www.postgresql.org/docs/) | [Redis Docs](https://redis.io/docs/) | [Apache Kafka Docs](https://kafka.apache.org/documentation/) | [Docker Docs](https://docs.docker.com/) | [Kubernetes Docs](https://kubernetes.io/docs/)
 
 
 ## 5. Estrutura e Tipos de Ficheiros
@@ -151,9 +145,7 @@ O monolito mantém a estrutura padrão de diretórios do framework, porém com p
 
 - **Controllers (`app/Http/Controllers/`):** Atuam apenas como routers internos. Recebem a requisição validada, repassam para as Actions/Services e retornam uma resposta HTTP (via Resources). Não devem conter regras de negócio complexas.
 
-- **Actions / Services (`app/Actions/` ou `app/Services/`):** Onde reside a lógica de negócio central (ex: CreateSaleAction). Recebem DTOs como parâmetros e executam a mutação dos dados ou integrações.
-
-- **Data Transfer Objects - DTOs (`app/Data/`):** Classes geradas via `spatie/laravel-data`. Representam de forma tipada os dados que trafegam entre Controllers e Services.
+- **Actions / Services (`app/Actions/` ou `app/Services/`):** Onde reside a lógica de negócio central (ex: `CreateUserAction`).
 
 - **Resources (`app/Http/Resources/`):** Camada de transformação de saída. Mapeiam as Models do Eloquent para representações JSON (API Resources), garantindo contratos de API estáveis e omitindo dados sensíveis.
 
@@ -167,28 +159,26 @@ O monolito mantém a estrutura padrão de diretórios do framework, porém com p
 
 A organização da SPA segue o sistema de roteamento baseado em ficheiros do Nuxt e segregação lógica de componentes:
 
-- **Pages (`pages/`):** Ficheiros que mapeiam diretamente para rotas de URL do sistema (Roteamento baseado em ficheiros). Agregam componentes maiores.
+- **Pages (`app/Pages/`):** Ficheiros que mapeiam diretamente para rotas de URL.
 
-- **Components (`components/`):** Elementos de interface reutilizáveis (botões, modais, formulários). Preferencialmente "burros" (Dumb Components), recebendo dados via props e emitindo emits.
+- **Components (`app/components/`):** Elementos de interface reutilizáveis.
 
-- **Composables (`composables/`):** Funções TypeScript que encapsulam lógicas de negócio front-end ou estado reativo reaproveitável entre componentes (ex: useFormatCurrency, useCart).
+- **Composables (`app/Composables/`):** Funções TypeScript para lógica reativa e integração com API (ex: `useUsers`, `useLoginForm`).
 
-- **Services / Repositories (`services/`):** Classes ou funções dedicadas a centralizar e abstrair as chamadas HTTP para a API REST, evitando requisições espalhadas pelos ficheiros `.vue`.
+- **Services / Repositories (`app/services/`, quando necessário):** abstrações adicionais para chamadas HTTP quando os composables deixarem de ser suficientes.
 
-- **Stores (`stores/`):** Ficheiros de estado global (Pinia). Utilizados para armazenar dados que precisam ser acedidos através de múltiplas ecrãs (ex: Dados do Utilizador Logado, Configurações de Tema).
+- **Stores (`app/stores/`, quando necessário):** estado global com Pinia.
 
-- **Layouts (`layouts/`):** Estruturas de wrappers visuais da aplicação (ex: default.vue para a visão com menu lateral, auth.vue para o ecrã de login vazio).
+- **Layouts (`app/Layouts/`):** wrappers visuais da aplicação.
 
 
 ## 6. Padrões de Projeto (Design Patterns)
 
-### 6.1 Backend (MVC com Camada de Serviço)
+### 6.1 Backend (MVC com Actions)
 
 A aplicação respeita a organização estrutural padrão do Laravel (Model-View-Controller), mas mitiga a deficiência de escalabilidade de Controllers pesados introduzindo uma camada de abstração para as regras de negócio:
 
-- **Service/Action Pattern:** O Controller atua unicamente como orquestrador HTTP. Toda transação que envolva mutação de base de dados ou chamadas externas é encapsulada numa classe dedicada (Service ou Action).
-
-- **DTO Pattern:** Prevenção do Array-Oriented Programming. Entradas e saídas de serviços utilizam objetos estritamente tipados, garantindo previsibilidade.
+- **Action Pattern:** O Controller atua como orquestrador HTTP e delega lógica para Actions/Services.
 
 - **Eventos (Pub/Sub):** Desacoplamento de ações colaterais. Uma mutação transacional primária (ex: Venda Aprovada) dispara um evento (SaleApprovedEvent); listeners independentes assumem as tarefas secundárias de forma síncrona ou assíncrona na fila.
 
@@ -196,7 +186,7 @@ A aplicação respeita a organização estrutural padrão do Laravel (Model-View
 
 O roteamento e a organização visual seguirão uma estrutura focada no domínio de negócio, evitando pastas tecnológicas genéricas (quando cabível) para garantir coesão.
 
-- **Domain Pages:** As views/páginas serão agregadas por seu domínio (ex: pages/Products/Show.vue, pages/Products/List.vue, pages/Suppliers/Create.vue).
+- **Domain Pages:** As views/páginas podem ser agregadas por domínio (ex: `app/Pages/configuration/users/index.vue`).
 
 - **Repository Pattern:** O acesso à API REST não é feito de forma crua nos componentes visuais. O isolamento de contratos ocorre nos Services, garantindo que, se o formato de um JSON mudar na API, apenas um ficheiro TypeScript precisará de correção.
 
@@ -208,11 +198,13 @@ O sistema operará sob um padrão de Monorepo para assegurar a atomicidade de co
 
 ```
 drs-erp/
-├── backend/                # Laravel 11 Application (Core)
+├── backend/                # Laravel 12 Application (Core)
 ├── bi-service/             # Python FastAPI Application (Analytics)
 ├── docs/                   # Project Documentation (Markdown, Diagrams)
-├── frontend/               # Nuxt 3 Application (SPA)
-├── infra/                  # Manifestos IaC (Kubernetes, Docker, Prometheus)
+├── frontend/               # Nuxt 4 Application (SPA)
+├── infra/                  # Manifestos IaC (Kubernetes, Prometheus, Grafana)
+├── bin/                    # Scripts de automação local
+├── Makefile                # CLI de comandos do projeto
 ├── docker-compose.yml      # Orquestração local de desenvolvimento
 ```
 

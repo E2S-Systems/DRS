@@ -37,7 +37,7 @@ Mesmo sendo um time pequeno, haverá papéis definidos:
 |---|---|
 |**Tech Lead (Rotativo ou Fixo)**|Decisão técnica final, revisão crítica, arquitetura|
 |**Backend Developer**|Laravel, regras de negócio, API|
-|**Frontend Developer**|Nuxt 3, UX, integração API|
+|**Frontend Developer**|Nuxt 4, UX, integração API|
 |**Microservices Developer**|Serviços Python (processamentos, integrações, tarefas assíncronas)|
 
 > Todos devem saber o básico de todas as camadas. A especialização não impede colaboração cruzada.
@@ -50,11 +50,11 @@ Mesmo sendo um time pequeno, haverá papéis definidos:
 
 |Camada|Tecnologia|Observação|
 |---|---|---|
-|Backend Core|Laravel 11+|PHP 8.3+|
-|API Docs|Swagger (L5-Swagger)|Contrato obrigatório|
+|Backend Core|Laravel 12|PHP 8.4 (runtime em Docker)|
+|API Docs|Scramble (OpenAPI)|Contrato obrigatório|
 |Database|PostgreSQL|Modelagem relacional robusta|
 |Cache / Queue|Redis|Filas e jobs|
-|Autenticação|JWT ou Sanctum|Definir no documento técnico|
+|Autenticação|Sanctum (token)|Padrão atual do projeto|
 
 ---
 
@@ -62,7 +62,7 @@ Mesmo sendo um time pequeno, haverá papéis definidos:
 
 |Camada|Tecnologia|
 |---|---|
-|Framework|Nuxt 3 (Vue 3)|
+|Framework|Nuxt 4 (Vue 3)|
 |Modo|SPA (SSR desabilitado inicialmente)|
 |UI|PrimeVue|
 |Estado Global|Pinia|
@@ -73,9 +73,9 @@ Mesmo sendo um time pequeno, haverá papéis definidos:
 
 |Camada|Tecnologia|
 |---|---|
-|Linguagem|Python 3.12+|
+|Linguagem|Python 3.11+|
 |Framework sugerido|FastAPI|
-|Comunicação|REST ou mensageria via Redis|
+|Comunicação|REST e mensageria via Kafka (quando aplicável)|
 |Responsabilidade|Processamentos pesados, integrações externas, rotinas financeiras, geração de relatórios complexos|
 
 ### Regras Importantes
@@ -120,7 +120,7 @@ Mesmo sendo um time pequeno, haverá papéis definidos:
 
 ---
 
-## 4.2 Frontend (Nuxt 3)
+## 4.2 Frontend (Nuxt 4)
 
 - Uso obrigatório de `<script setup>`
     
@@ -128,13 +128,13 @@ Mesmo sendo um time pequeno, haverá papéis definidos:
     
 - Separar:
     
-    - `components/`
+    - `app/components/`
         
-    - `pages/`
+    - `app/Pages/`
         
-    - `services/api/`
+    - `app/Composables/`
         
-    - `stores/`
+    - `app/stores/` (quando necessário)
         
 
 ### Regra crítica:
@@ -151,15 +151,7 @@ Mesmo sendo um time pequeno, haverá papéis definidos:
     
 - Uso de `pydantic` para validação
     
-- Separação:
-    
-    - `routers/`
-        
-    - `services/`
-        
-    - `schemas/`
-        
-    - `core/`
+- No estado atual do repositório, o serviço está centralizado em `bi-service/main.py`.
         
 
 ---
@@ -168,15 +160,15 @@ Mesmo sendo um time pequeno, haverá papéis definidos:
 
 ---
 
-## 5.1 Multi-Tenancy
+## 5.1 Isolamento Multi-Filial
 
-Estratégia inicial: **Discriminator Column (`company_id`)**
+Estratégia atual: isolamento por filial para entidades que exigem escopo de unidade.
 
-Todas as tabelas devem conter:
+Para entidades com escopo por filial, as tabelas devem conter:
 
 - `id`
     
-- `company_id`
+- `branch_id`
     
 - `created_at`
     
@@ -187,13 +179,7 @@ Todas as tabelas devem conter:
 
 ### Regra Crítica
 
-Nenhuma query pode ignorar `company_id`.
-
-Criar Trait padrão:
-
-```php
-App\Traits\MultiTenantable
-```
+Nenhuma query de entidades com escopo filial deve ignorar `branch_id`.
 
 ---
 
@@ -252,17 +238,15 @@ feat: adiciona cálculo automático de juros
 
 ## 7.2 Branch Strategy
 
-Baseado em Git Flow simplificado:
+Padrão adotado:
 
 - `main` → Produção
     
 - `develop` → Integração
     
-- `feature/*`
-    
-- `fix/*`
-    
-- `hotfix/*`
+- `<type>/<TICKET-ID>-<descricao-curta>`
+- Exemplo: `feat/DRS-102-calculo-impostos`
+- Exemplo: `fix/DRS-105-erro-login-nulo`
     
 
 ---
@@ -288,7 +272,7 @@ Um card só pode ir para **DONE** se:
 
 -  Código segue padrão definido
     
--  Multi-tenancy validado
+-  Isolamento multi-filial validado (quando aplicável)
     
 -  API documentada
     
