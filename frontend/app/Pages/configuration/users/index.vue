@@ -8,14 +8,14 @@
                 </span>
             </div>
             <div>
-                <button class="bg-primary w-60 h-full cursor-pointer" @click="visible = true">
+                <button class="bg-primary hover:bg-primary-hover w-60 h-full cursor-pointer" @click="visible = true">
                     <i class="pi pi-plus m-2" style="font-size: 0.8rem" />
                     <span class="tracking-wider text-xl">NOVO USUÁRIO</span>
                 </button>
             </div>
         </div>
 
-        <DefaultModal :title="title" :subtitle="subtitle" v-model:visible="visible">
+        <DefaultModal :title="title" v-model:visible="visible">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mb-6">
                 <div class="flex flex-col gap-1">
                     <label for="first_name" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
@@ -68,8 +68,8 @@
                     </label>
                     <InputText id="password_confirmation" v-model="form.password_confirmation" type="password"
                         autocomplete="off" placeholder="Mín. 8 caracteres" class="w-full" />
-                    <small v-if="fieldErrors.password" class="text-red-500">
-                        {{ fieldErrors.password }}
+                    <small v-if="fieldErrors.password_confirmation" class="text-red-500">
+                        {{ fieldErrors.password_confirmation }}
                     </small>
                 </div>
 
@@ -83,18 +83,6 @@
                         {{ fieldErrors.role }}
                     </small>
                 </div>
-
-                <div class="flex flex-col gap-1">
-                    <label for="branch" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
-                        Filial
-                    </label>
-                    <Select id="branch" v-model="form.branch" :options="branches" optionLabel="name" optionValue="code"
-                        placeholder="Selecione a filial" class="w-full" />
-                    <small v-if="fieldErrors.branch" class="text-red-500">
-                        {{ fieldErrors.branch }}
-                    </small>
-                </div>
-
             </div>
 
             <div class="flex justify-end gap-3">
@@ -181,7 +169,7 @@ const visible = ref(false)
 const roles = ref([
     { name: 'Administrador', code: 'admin' },
     { name: 'Gerente', code: 'manager' },
-    { name: 'Empregado', code: 'employeer' }
+    { name: 'Empregado', code: 'employee' }
 ])
 
 const form = reactive({
@@ -196,12 +184,12 @@ const form = reactive({
 
 function resetForm() {
     form.first_name = '',
-        form.last_name = '',
-        form.email = '',
-        form.password = '',
-        form.password_confirmation = '',
-        form.role = '',
-        form.is_active = true
+    form.last_name = '',
+    form.email = '',
+    form.password = '',
+    form.password_confirmation = '',
+    form.role = '',
+    form.is_active = true
 }
 
 const { fieldErrors, apiError, extractErrors, resetErrors } = useFormErrors({
