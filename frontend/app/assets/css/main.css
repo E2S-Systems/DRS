@@ -70,5 +70,27 @@
 }
 
 .p-button:focus-visible {
-  @apply border-none;
+  @apply outline-none;
+}
+
+/* Estilos referente a elementos do Dialog (modal) Component (Primevue)*/
+.p-dialog{
+  @apply border-t-primary border-t-4 border-x-0 border-b-0 rounded-none
+}
+
+/* Estilos referente a elementos do Select Component (Primevue)*/
+.p-select{
+  @apply border-b-text-muted border-t-0 border-x-0 rounded-none bg-transparent
+}
+
+.p-select:not(.p-disabled).p-focus {
+  @apply border-primary
+}
+
+.p-select-option.p-select-option-selected {
+  @apply bg-bg-panel text-text font-bold
+}
+
+.p-select-option.p-select-option-selected.p-focus {
+  @apply bg-bg-panel text-text font-bold
 }
