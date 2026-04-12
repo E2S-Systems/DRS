@@ -85,7 +85,7 @@ const emit = defineEmits<{
 
 const visible = computed({
     get: () => props.visible,
-    set: (val) => emit('update:visible', val),
+    set: (val: boolean) => emit('update:visible', val),
 })
 
 const { updateUser, isUpdating } = useUsers()
@@ -118,7 +118,7 @@ const fieldErrors = reactive<Partial<Record<keyof EditForm, string>>>({})
 // immediate: true garante que popula na primeira abertura também
 watch(
     () => props.user,
-    (user) => {
+    (user: User) => {
         if (!user) return
 
         form.first_name = user.first_name
