@@ -11,13 +11,8 @@ export interface PaginatedResponse<T> {
     last_page: number
     per_page: number
     total: number
-    from: number
-    to: number
-  }
-  counts: {
-    total: number
-    active: number
-    inactive: number
+    from: number | null
+    to: number | null
   }
   success: boolean
   message: string

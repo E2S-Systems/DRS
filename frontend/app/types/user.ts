@@ -1,3 +1,5 @@
+import type { PaginatedResponse } from "./api"
+
 export interface User {
   id: number
   first_name: string
@@ -23,6 +25,13 @@ export interface UpdateUserDTO {
   last_name?: string
   email?: string
   role?: string
-  is_active?: boolean
-  password?: string
+  password?: string | null
+  password_confirmation?: string
+}
+
+export interface PaginatedUsersResponse<T> extends PaginatedResponse<T> {
+  counts: {
+    total: number
+    active: number
+  }
 }

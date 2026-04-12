@@ -1,5 +1,4 @@
-import type { User, CreateUserDTO, UpdateUserDTO } from '~/types/user'
-import type { PaginatedResponse } from '~/types/api'
+import type { User, CreateUserDTO, UpdateUserDTO, PaginatedUsersResponse } from '~/types/user'
 
 export function useUsers() {
   const client = useSanctumClient()
@@ -16,7 +15,7 @@ export function useUsers() {
   const isUpdating = ref(false)
   const isDeleting = ref(false)
 
-  const { data: response, pending, error, refresh } = useFetch<PaginatedResponse<User>>(
+  const { data: response, pending, error, refresh } = useFetch<PaginatedUsersResponse<User>>(
     `${normalizedApiUrl}users`,
     {
       $fetch: client,
