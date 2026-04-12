@@ -42,6 +42,7 @@ interface UpdateUserDTO {
   role?: string
   is_active?: boolean
   password?: string
+  password_confirmation?: string
 }
 
 export function useUsers() {
