@@ -47,6 +47,7 @@ interface UpdateUserDTO {
 export function useUsers() {
   const client = useSanctumClient()
   const { public: { apiUrl } } = useRuntimeConfig()
+  const toast = useToast()
 
   const normalizedApiUrl = apiUrl.endsWith('/') ? apiUrl : `${apiUrl}/`
 
@@ -85,6 +86,12 @@ export function useUsers() {
         method: 'POST',
         body: payload,
       })
+      toast.success({
+        title: 'Usuário criado com sucesso!',
+        description: `Confirmação da criação de usuário`,
+        icon: 'pi pi-check',
+        position: 'topCenter',
+      })
       await refresh()
     } finally {
       isCreating.value = false
@@ -97,6 +104,12 @@ export function useUsers() {
       await client(`${normalizedApiUrl}users/${id}`, {
         method: 'PUT',
         body: payload,
+      })
+      toast.success({
+        title: 'Usuário atualizado com sucesso!',
+        description: `Confirmação da atualização de usuário`,
+        icon: 'pi pi-check',
+        position: 'topCenter',
       })
       await refresh()
     } finally {
@@ -114,6 +127,13 @@ export function useUsers() {
       if (data.value.length === 1 && currentPage.value > 1) {
         currentPage.value -= 1
       }
+
+      toast.success({
+        title: 'Usuário deletado com sucesso!',
+        description: `Confirmação da exclusão de usuário`,
+        icon: 'pi pi-check',
+        position: 'topCenter',
+      })
 
       await refresh()
     } finally {
