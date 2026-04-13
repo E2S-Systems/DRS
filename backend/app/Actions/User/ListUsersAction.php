@@ -34,7 +34,7 @@ class ListUsersAction
             )
             ->when(
                 $request->filled('status'),
-                fn($q) => $q->where('is_active', $request->boolean('status'))
+                fn ($q) => $q->where('is_active', $request->boolean('status'))
             )
             ->orderBy('id', 'asc');
 

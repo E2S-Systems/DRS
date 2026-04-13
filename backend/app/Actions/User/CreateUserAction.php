@@ -18,7 +18,6 @@ class CreateUserAction
     {
         $role = RoleUser::from($data['role']);
 
-
         $user = User::create([
             ...Arr::except($data, ['role']),
             'created_by' => Auth::id(),

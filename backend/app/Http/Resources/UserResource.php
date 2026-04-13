@@ -21,7 +21,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'role' => $this->whenLoaded(
                 'roles',
-                fn() => $this->roles->first()?->name
+                fn () => $this->roles->first()?->name
             ),
             'is_active' => $this->is_active,
             'last_login_at' => $this->last_login_at?->toDateTimeString(),
@@ -29,7 +29,7 @@ class UserResource extends JsonResource
             'updated_at' => $this->updated_at->toDateTimeString(),
             'created_by' => $this->whenLoaded(
                 'creator',
-                fn() => $this->creator
+                fn () => $this->creator
                 ? "{$this->creator->id}"
                 : null
             ),

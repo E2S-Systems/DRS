@@ -19,7 +19,7 @@ class AuthResource extends JsonResource
             'is_active' => $this->is_active,
             'role' => $this->whenLoaded(
                 'roles',
-                fn() => $this->roles->first()?->name
+                fn () => $this->roles->first()?->name
             ),
         ];
     }
