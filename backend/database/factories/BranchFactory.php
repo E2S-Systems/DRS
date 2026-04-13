@@ -23,25 +23,25 @@ class BranchFactory extends Factory
         $name = $this->faker->unique()->company();
 
         return [
-            'name'               => $name,
-            'corporate_name'     => $name . ' ' . $this->faker->randomElement(['Ltda', 'S/A', 'ME', 'EIRELI', 'S.A.']),
-            'slug_name'          => Str::slug($name),
-            'document'           => $this->fakeCnpj(),
+            'name' => $name,
+            'corporate_name' => $name.' '.$this->faker->randomElement(['Ltda', 'S/A', 'ME', 'EIRELI', 'S.A.']),
+            'slug_name' => Str::slug($name),
+            'document' => $this->fakeCnpj(),
             'state_registration' => $this->faker->numerify('###.###.###.###'),
-            'email'              => $this->faker->unique()->safeEmail(),
-            'phone'              => $this->fakeBrazilianPhone(),
-            'zip_code'           => $this->faker->numerify('#####-###'),
-            'street'             => $this->faker->streetName(),
-            'number'             => $this->faker->buildingNumber(),
-            'complement'         => $this->faker->optional(0.4)->secondaryAddress(),
-            'district'           => $this->faker->citySuffix(),
-            'city'               => $this->faker->city(),
-            'state'              => $this->faker->randomElement([
+            'email' => $this->faker->unique()->safeEmail(),
+            'phone' => $this->fakeBrazilianPhone(),
+            'zip_code' => $this->faker->numerify('#####-###'),
+            'street' => $this->faker->streetName(),
+            'number' => $this->faker->buildingNumber(),
+            'complement' => $this->faker->optional(0.4)->secondaryAddress(),
+            'district' => $this->faker->citySuffix(),
+            'city' => $this->faker->city(),
+            'state' => $this->faker->randomElement([
                 'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO',
                 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI',
                 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO',
             ]),
-            'is_active'          => true,
+            'is_active' => true,
         ];
     }
 
@@ -77,7 +77,7 @@ class BranchFactory extends Factory
      */
     private function fakeBrazilianPhone(): string
     {
-        $ddd    = $this->faker->randomElement(['11', '21', '31', '41', '51', '61', '71', '81', '91']);
+        $ddd = $this->faker->randomElement(['11', '21', '31', '41', '51', '61', '71', '81', '91']);
         $mobile = $this->faker->boolean(70);
 
         if ($mobile) {

@@ -23,10 +23,10 @@ return new class extends Migration
             $table->timestamps();
             $table->rememberToken();
             $table->foreignId('created_by')
-                  ->nullable()                    
-                  ->after('remember_token')
-                  ->constrained('users')
-                  ->nullOnDelete();   
+                ->nullable()
+                ->after('remember_token')
+                ->constrained('users')
+                ->nullOnDelete();
             $table->softDeletes();
         });
     }

@@ -5,20 +5,20 @@ return [
         'view',
         'create',
         'update',
-        'delete'
+        'delete',
     ],
 
     'users' => [
         'view',
         'create',
         'update',
-        'delete'
+        'delete',
     ],
 
     'sales' => [
         'view',
         'create',
         'update',
-        'cancel'
+        'cancel',
     ],
 ];

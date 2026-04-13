@@ -8,7 +8,6 @@ use App\Actions\User\LoginUserAction;
 use App\Actions\User\LogoutUserAction;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\LogoutRequest;
-use App\Http\Resources\AuthResource;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
@@ -22,7 +21,7 @@ class AuthController extends Controller
             password: $request->validated('password'),
         );
 
-        if (!$result['success']) {
+        if (! $result['success']) {
             return response()->json([
                 'success' => false,
             ], HttpResponse::HTTP_UNAUTHORIZED);

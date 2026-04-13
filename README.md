@@ -4,7 +4,7 @@ Desenvolvido por E2S Systems
 
 ## 📌 Sobre o Projeto
 
-O DRS é um ERP SaaS verticalizado de alta performance, projetado especificamente para o varejo de comunicação visual. Em vez de um sistema monolítico rígido, o DRS utiliza uma arquitetura orientada a eventos para reduzir o "arrasto operacional" de empresas com múltiplas filiais, integrando gestão transacional (Vendas, Estoque) com inteligência preditiva (Data/ML).
+O DRS é um ERP SaaS verticalizado de alta performance, projetado especificamente para o varejo de comunicação visual. Em vez de um sistema monolítico rígido, o DRS utiliza uma arquitetura orientada a eventos para reduzir o "arrasto operacional" de empresas com múltiplas filiais, integrando gestão transacional (Vendas, Estoque) com serviços analíticos.
 
 ## 🏗️ Arquitetura (Monorepo)
 
@@ -17,7 +17,7 @@ drs-erp/
 ├── bin/                    # Scripts de automação (setup.sh)
 ├── docs/                   # Project Documentation (Markdown, Diagrams)
 ├── frontend/               # Nuxt 4 Application (SPA)
-├── infra/                  # Manifestos IaC (Kubernetes, Docker, Prometheus)
+├── infra/                  # Manifestos IaC (Kubernetes, Prometheus, Grafana)
 ├── docker-compose.yml      # Orquestração local de desenvolvimento
 └── Makefile                # CLI de comandos do projeto
 ```
@@ -25,8 +25,8 @@ drs-erp/
 ## 🛠️ Stack Tecnológica
 
 - **Apresentação:** Vue.js 3, Nuxt 4, TailwindCSS, Pinia.
-- **Regra de Negócio:** PHP 8.4, Laravel 12, Spatie Data/QueryBuilder.
-- **Inteligência e Dados:** Python 3.11, FastAPI, Polars, LangChain.
+- **Regra de Negócio:** PHP 8.4, Laravel 12, Spatie QueryBuilder/Permission/MediaLibrary.
+- **Inteligência e Dados:** Python 3.11, FastAPI, Pandas (Polars), LangGraph.
 - **Persistência & Mensageria:** PostgreSQL 16, Redis 7, Apache Kafka.
 
 ## 🚀 Como Iniciar (Ambiente de Desenvolvimento)
@@ -43,7 +43,7 @@ cd DRS
 make setup
 ```
 
-O `make setup` cuida de tudo automaticamente: sobe os containers, aguarda os serviços ficarem saudáveis, instala dependências PHP e Node, gera a `APP_KEY`, executa migrations e seeders, e gera a documentação da API.
+O `make setup` cuida de tudo automaticamente: sobe os containers, aguarda os serviços ficarem saudáveis, instala dependências PHP e Node, gera a `APP_KEY`, executa migrations e seeders.
 
 > **Credenciais padrão:** `admin@drs.systems` / `drs@123456`
 

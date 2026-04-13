@@ -1,6 +1,6 @@
 # ==============================================================================
 # DRS (Dynamic Resource System) - Local Development Environment
-# Empresa: E2S Labs
+# Empresa: E2S Systems
 # ==============================================================================
 # Como rodar o sistema base: docker-compose up -d
 # Como rodar com a stack de métricas: docker-compose --profile observability up -d

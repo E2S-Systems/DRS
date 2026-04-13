@@ -49,7 +49,7 @@ test('authenticated user with delete permission can soft delete a user', functio
     // Assert record still exists in database (not hard deleted)
     $userCountAfter = User::withTrashed()->count();
     expect($userCountAfter)->toBe($userCountBefore);
-    
+
     $this->assertDatabaseHas('users', [
         'id' => $userId,
     ]);
@@ -65,7 +65,7 @@ test('soft deleted user has deleted_at timestamp set', function () {
     $response->assertOk();
 
     $deletedUser = User::withTrashed()->find($targetUser->id);
-    
+
     expect($deletedUser->deleted_at)
         ->not->toBeNull()
         ->and($deletedUser->deleted_at)->toBeInstanceOf(\Illuminate\Support\Carbon::class);
@@ -138,7 +138,7 @@ test('employee without delete permission cannot delete users', function () {
         ->deleteJson("/api/v1/users/{$targetUser->id}");
 
     $response->assertForbidden();
-    
+
     // Verify user was not deleted
     expect(User::find($targetUser->id))->not->toBeNull();
 });

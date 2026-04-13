@@ -64,7 +64,7 @@ Um PR só pode sofrer merge para a `develop` se cumprir os seguintes critérios 
 
 - [ ] O código respeita os padrões de sintaxe e linting da respetiva stack.
 
-- [ ] O isolamento multi-filial (`branch_id`) foi aplicado e testado nas queries.
+- [ ] O isolamento multi-filial (`branch_id`) foi aplicado e testado nas queries, quando aplicável ao domínio.
 
 - [ ] Nenhum aviso (_warning_) crítico de compilação ou consola foi introduzido.
 
@@ -83,17 +83,17 @@ Sempre que uma nova entidade (ex: Produto, Fornecedor, Cliente) for desenvolvida
 
 - [ ] **Permissões (config/):** Atualizar permissions.php e mapear os acessos no profile-permissions.php. Rodar o Seeder em seguida.
 
-- [ ] **Migration:** Criar a tabela. É obrigatório incluir branch_id (se for isolado por filial) e $table->softDeletes().
+- [ ] **Migration:** Criar a tabela. Incluir `branch_id` quando a entidade for isolada por filial e `$table->softDeletes()`.
 
 - [ ] **Seeder / Factory:** Criar dados de teste (mínimo de 10 registos) para facilitar a vida do Frontend.
 
-- [ ] **Model:** Configurar $fillable, relacionamentos, casts e usar a Trait MultiTenantable (se aplicável ao domínio).
+- [ ] **Model:** Configurar `$fillable`, relacionamentos e casts.
 
-- [ ] **Policy:** Criar a Policy garantindo a união entre a permissão (Spatie) e o Isolamento Multi-Filial (branch_id).
+- [ ] **Policy:** Criar a Policy garantindo a união entre a permissão (Spatie) e o isolamento por filial, quando aplicável.
 
 - [ ] **FormRequests:** Criar classes de validação estritas para os verbos de entrada (ex: StoreProductRequest e UpdateProductRequest).
 
-- [ ] **Service / Action:** Isolar a regra de negócio (inserção/atualização) num ficheiro dedicado (ex: ProductService).
+- [ ] **Action / Service:** Isolar a regra de negócio (inserção/atualização) num ficheiro dedicado (ex: `CreateProductAction`).
 
 - [ ] **Resource (DTO de Saída):** Criar a formatação de resposta (ex: ProductResource), ocultando campos sensíveis.
 
@@ -109,19 +109,19 @@ Siga esta sequência de comandos e implementações para criar um CRUD de forma 
 
 **1. Gere a Model, Migration, Factory e Seeder em um único comando:**
 ```bash
-php artisan make:model Product -mfs
+make art q="make:model Product -mfs"
 ```
-Implemente a Migration (com `branch_id` e `softDeletes`), configure o `$fillable`, `$casts` e relacionamentos na Model, e popule a Factory e o Seeder com dados realistas.
+Implemente a Migration (com `branch_id` quando aplicável e `softDeletes`), configure o `$fillable`, `$casts` e relacionamentos na Model, e popule a Factory e o Seeder com dados realistas.
 
 **2. Valide as Entidades criadas:**
 ```bash
-php artisan db:seed --class=ProductSeeder
+make art q="db:seed --class=ProductSeeder"
 ```
 Confirme que os registros foram inseridos corretamente antes de prosseguir.
 
 **3. Crie o Controller API Resource:**
 ```bash
-php artisan make:controller ProductController --api
+make art q="make:controller ProductController --api"
 ```
 Implemente os 5 métodos padrão (`index`, `show`, `store`, `update`, `destroy`), delegando a lógica ao Service e retornando sempre um Resource.
 
@@ -134,14 +134,14 @@ Route::prefix('v1')->middleware('auth:sanctum')->group(function () {
 
 **5. Crie os Form Requests:**
 ```bash
-php artisan make:request StoreProductRequest
-php artisan make:request UpdateProductRequest
+make art q="make:request Store/ProductRequest"
+make art q="make:request Update/ProductRequest"
 ```
 Defina `authorize()` com a Policy correspondente e implemente as `rules()` com validações estritas.
 
 **6. Crie o Resource:**
 ```bash
-php artisan make:resource ProductResource
+make art q="make:resource ProductResource"
 ```
 Exponha apenas os campos necessários, ocultando dados sensíveis ou internos.
 
@@ -151,21 +151,21 @@ Exponha apenas os campos necessários, ocultando dados sensíveis ou internos.
 - **7.2.** Vincule as permissões às Roles correspondentes em `config/profile-permissions.php`.
 - **7.3.** Crie a Policy:
 ```bash
-php artisan make:policy ProductPolicy --model=Product
+make art q="make:policy ProductPolicy --model=Product"
 ```
-A Policy deve validar tanto a permissão via Spatie quanto o isolamento por `branch_id`.
+A Policy deve validar tanto a permissão via Spatie quanto o isolamento por filial, quando aplicável.
 
 ### 3.2. Frontend (Nuxt/Vue)
 
-- [ ] **Service de API (services/api/):** Criar a classe que espelha os endpoints gerados no Swagger/Scramble (ex: ProductService.ts).
+- [ ] **Composables de API (`app/Composables/`):** encapsular as chamadas HTTP (ex: `useProducts.ts`) e estado da tela.
 
-- [ ] **Páginas (pages/):** Criar a estrutura de roteamento (ex: pages/products/index.vue, create.vue, [id].vue).
+- [ ] **Páginas (`app/Pages/`):** Criar a estrutura de roteamento (ex: `app/Pages/products/index.vue`).
 
 - [ ] **Componentes (components/):** Isolar elementos de UI complexos (ex: FormProduct.vue, DataTableProducts.vue). Eles devem ser "burros" (usar props e emits).
 
-- [ ] **Store / Pinia (stores/):** Apenas se a entidade precisar de estar globalmente acessível na memória da aplicação (evitar o uso indiscriminado).
+- [ ] **Store / Pinia (`app/stores/`):** usar apenas quando o estado realmente for global.
 
-- [ ] **Layouts (layouts/):** Atualizar o menu lateral de navegação (se a nova entidade for uma rota principal).
+- [ ] **Layouts (`app/Layouts/`):** atualizar navegação quando a entidade for uma rota principal.
 
 
 ## 3. Convenções de Código: Backend (Laravel)
@@ -232,9 +232,9 @@ Utilizar TypeScript de forma agressiva (interfaces para propriedades e contratos
 
 ### 4.3. Consumo de API (Repository Pattern)
 
-- Proibido o uso de chamadas HTTP (ex: `$fetch` ou `useFetch`) espalhadas diretamente pelos ficheiros `.vue`.
+- Proibido o uso de chamadas HTTP espalhadas diretamente pelos ficheiros `.vue`.
 
-- As requisições devem ser encapsuladas em ficheiros dentro de `services/api/`. Isto garante um único ponto de manutenção caso o contrato da API mude.
+- As requisições devem ser encapsuladas em composables (ex: `app/Composables/useUsers.ts`) e, quando necessário, em uma camada adicional de serviço.
 
 ### 4.4. Gestão de Estado Global (Pinia)
 
@@ -252,7 +252,7 @@ Uso obrigatório de tipagem nativa do Python via biblioteca `typing`.
 
 Nomenclatura: `snake_case` para variáveis, métodos e ficheiros. `PascalCase` para Classes.
 
-Separação lógica de diretórios: `routers/`, `services/`, `schemas/` e `core/`.
+No estado atual do repositório, o BI Service é enxuto e centralizado em `bi-service/main.py`.
 
 ### 5.2. Fronteiras de Responsabilidade
 
@@ -270,7 +270,7 @@ Utilizar o `pydantic` para validação de Schemas de entrada e saída.
 
 A plataforma D.R.S opera sob _Hierarchical Data Isolation._
 
-O uso do `branch_id` é mandatório.
+O uso do `branch_id` é mandatório para entidades com escopo de filial.
 
 A filtragem deve ser aplicada no Repositório/Serviço utilizando as verificações de papéis (`spatie/laravel-permission`) para garantir que os utilizadores corporativos (Diretoria) conseguem visualizar dados consolidados.
 
