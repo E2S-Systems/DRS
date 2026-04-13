@@ -125,6 +125,24 @@
                     </span>
                 </template>
             </Column>
+
+            <Column field="last_login_at" header="Último Acesso">
+                <template #body="{ data: user }">
+                    {{ formatDate(user.last_login_at) }}
+                </template>
+            </Column>
+
+            <Column field="created_by" header="Criado por">
+                <template #body="{ data: user }">
+                    <span v-if="user.created_by">
+                    {{ user.created_by }}
+                    </span>
+                    <span v-else class="text-text-muted text-xs">
+                        —
+                    </span>
+                </template>
+            </Column>
+
             <ConfirmDialog :draggable="false" :blockScroll="true" />
             <Column field="actions" header="Ações">
                 <template #body="{ data: user }">
@@ -147,6 +165,10 @@ definePageMeta({ layout: 'configuration' })
 import { useUsers } from '~/Composables/useUsers'
 import { useFormErrors } from '~/Composables/useFormErrors'
 import type { User } from '~/types/user';
+
+useHead({
+    title: "Configurações - Usuários"
+})
 
 const confirm = useConfirm();
 
@@ -184,12 +206,12 @@ const form = reactive({
 
 function resetForm() {
     form.first_name = '',
-    form.last_name = '',
-    form.email = '',
-    form.password = '',
-    form.password_confirmation = '',
-    form.role = '',
-    form.is_active = true
+        form.last_name = '',
+        form.email = '',
+        form.password = '',
+        form.password_confirmation = '',
+        form.role = '',
+        form.is_active = true
 }
 
 const { fieldErrors, apiError, extractErrors, resetErrors } = useFormErrors({

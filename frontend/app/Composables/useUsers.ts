@@ -1,49 +1,4 @@
-import type { User } from '~/types/user'
-
-interface PaginatedResponse<T> {
-  data: T[]
-  links: {
-    first: string
-    last: string
-    prev: string | null
-    next: string | null
-  }
-  meta: {
-    current_page: number
-    last_page: number
-    per_page: number
-    total: number
-    from: number
-    to: number
-  }
-  counts: {
-    total: number
-    active: number
-    inactive: number
-  }
-  success: boolean
-  message: string
-}
-
-interface CreateUserDTO {
-  first_name: string
-  last_name: string
-  email: string
-  role: string
-  password: string
-  password_confirmation: string
-  is_active: boolean
-}
-
-interface UpdateUserDTO {
-  first_name?: string
-  last_name?: string
-  email?: string
-  role?: string
-  is_active?: boolean
-  password?: string
-  password_confirmation?: string
-}
+import type { User, CreateUserDTO, UpdateUserDTO, PaginatedUsersResponse } from '~/types/user'
 
 export function useUsers() {
   const client = useSanctumClient()
@@ -60,7 +15,7 @@ export function useUsers() {
   const isUpdating = ref(false)
   const isDeleting = ref(false)
 
-  const { data: response, pending, error, refresh } = useFetch<PaginatedResponse<User>>(
+  const { data: response, pending, error, refresh } = useFetch<PaginatedUsersResponse<User>>(
     `${normalizedApiUrl}users`,
     {
       $fetch: client,
