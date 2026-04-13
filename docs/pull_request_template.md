@@ -26,7 +26,7 @@ Qual problema essa PR resolve?
 
 Se existir ticket no Jira, linke aqui:
 
-Jira: VCE-XXX
+Jira: DRS-XXX
 
 ---
 
@@ -47,7 +47,7 @@ Liste objetivamente as alterações:
 
 Explique passo a passo como validar essa PR:
 
-1. Rodar `php artisan migrate`
+1. Rodar `make migrate`
 2. Acessar `/produtos`
 3. Criar novo produto
 4. Validar listagem

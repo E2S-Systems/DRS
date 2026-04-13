@@ -27,15 +27,14 @@ class UserFactory extends Factory
             'last_name' => fake()->lastName(),
             'email' => fake()->unique()->safeEmail(),
             'password' => static::$password ??= Hash::make('password'),
-            'last_login_at' => now()
+            'last_login_at' => now(),
         ];
     }
 
     /**
      * Indicate that the user should have a specific role assigned.
      *
-     * @param string|RoleUser $role The role to assign
-     * @return static
+     * @param  string|RoleUser  $role  The role to assign
      */
     public function withRole(string|RoleUser $role): static
     {
@@ -47,8 +46,6 @@ class UserFactory extends Factory
 
     /**
      * Indicate that the user should be an admin.
-     *
-     * @return static
      */
     public function admin(): static
     {
@@ -57,8 +54,6 @@ class UserFactory extends Factory
 
     /**
      * Indicate that the user should be a manager.
-     *
-     * @return static
      */
     public function manager(): static
     {
@@ -67,8 +62,6 @@ class UserFactory extends Factory
 
     /**
      * Indicate that the user should be an employee.
-     *
-     * @return static
      */
     public function employee(): static
     {

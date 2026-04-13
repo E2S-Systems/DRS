@@ -1,75 +1,21 @@
-# Nuxt Minimal Starter
+# Frontend (Nuxt 4)
 
-Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+Aplicação SPA em Nuxt 4 com Vue 3 e TypeScript.
 
-## Setup
+## Estrutura usada no projeto
 
-Make sure to install dependencies:
+- `app/Pages`
+- `app/Layouts`
+- `app/Composables`
+- `app/Plugins`
+- `app/components`
 
-```bash
-# npm
-npm install
+## Comandos
 
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
+No fluxo padrão do monorepo, use o Makefile:
 
 ```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
+make up
+make npm-install
+make npm-build
 ```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.

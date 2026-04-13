@@ -35,7 +35,7 @@ class UserRequest extends FormRequest
                 'string',
                 'email:rfc',
                 Rule::unique('users')->ignore($user->id),
-                'max:255'
+                'max:255',
             ],
             'password' => 'sometimes|nullable|string|min:8|confirmed:password_confirmation',
         ];

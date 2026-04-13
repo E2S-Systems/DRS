@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Actions\User;
@@ -23,7 +24,7 @@ class ListUsersAction
             ->with(['roles', 'creator:id'])
             ->when(
                 $request->filled('search'),
-                fn($q) => $q->where(function ($q) use ($request) {
+                fn ($q) => $q->where(function ($q) use ($request) {
                     $term = strtolower($request->search);
 
                     $q->whereRaw('LOWER(first_name) LIKE ?', ["%{$term}%"])

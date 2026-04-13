@@ -88,13 +88,13 @@ test('returns paginated results', function () {
 
 test('filters users by search term on first name', function () {
     $manager = User::factory()->manager()->create();
-    
+
     $searchableUser = User::factory()->employee()->create([
         'first_name' => 'Unique',
         'last_name' => 'Person',
         'email' => 'unique@example.com',
     ]);
-    
+
     // Create additional users with roles
     User::factory()->employee()->count(5)->create();
 
@@ -102,7 +102,7 @@ test('filters users by search term on first name', function () {
         ->getJson('/api/v1/users?search=unique');
 
     $response->assertOk();
-    
+
     $data = $response->json('data');
     expect($data)->toHaveCount(1)
         ->and($data[0]['first_name'])->toBe('Unique');
@@ -110,11 +110,11 @@ test('filters users by search term on first name', function () {
 
 test('filters users by search term on email', function () {
     $manager = User::factory()->manager()->create();
-    
+
     $searchableUser = User::factory()->employee()->create([
         'email' => 'findme@special.com',
     ]);
-    
+
     // Create additional users with roles
     User::factory()->employee()->count(5)->create();
 
@@ -122,7 +122,7 @@ test('filters users by search term on email', function () {
         ->getJson('/api/v1/users?search=findme');
 
     $response->assertOk();
-    
+
     $data = $response->json('data');
     expect($data)->toHaveCount(1)
         ->and($data[0]['email'])->toBe('findme@special.com');
@@ -130,7 +130,7 @@ test('filters users by search term on email', function () {
 
 test('filters users by active status', function () {
     $manager = User::factory()->manager()->create();
-    
+
     // Create users with roles and specific active status
     User::factory()->employee()->count(3)->create(['is_active' => true]);
     User::factory()->employee()->count(2)->create(['is_active' => false]);
@@ -139,14 +139,14 @@ test('filters users by active status', function () {
         ->getJson('/api/v1/users?status=1');
 
     $response->assertOk();
-    
+
     $activeCount = $response->json('counts.active');
     expect($activeCount)->toBeGreaterThanOrEqual(3);
 });
 
 test('returns correct counts object', function () {
     $manager = User::factory()->manager()->create();
-    
+
     // Create users with roles and specific active status
     User::factory()->employee()->count(5)->create(['is_active' => true]);
     User::factory()->employee()->count(3)->create(['is_active' => false]);

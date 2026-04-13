@@ -7,7 +7,7 @@ use Exception;
 class BusinessException extends Exception
 {
     public function __construct(
-        string $message = "Erro de regra de negócio",
+        string $message = 'Erro de regra de negócio',
         protected int $status = 400
     ) {
         parent::__construct($message);

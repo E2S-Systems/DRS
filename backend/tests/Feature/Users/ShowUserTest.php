@@ -87,7 +87,7 @@ test('response includes all user resource fields', function () {
         ->getJson("/api/v1/users/{$targetUser->id}");
 
     $response->assertOk();
-    
+
     $data = $response->json('data');
     expect($data)->toHaveKeys([
         'id',
@@ -104,4 +104,3 @@ test('response includes all user resource fields', function () {
         ->and($data['is_active'])->toBe(true)
         ->and($data['role'])->toBe('admin');
 });
-

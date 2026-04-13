@@ -49,24 +49,16 @@ return Application::configure(basePath: dirname(__DIR__))
                 $status = 422;
                 $message = 'Erro de validação';
                 $errors = $e->errors();
-            }
-
-            elseif ($e instanceof AuthenticationException) {
+            } elseif ($e instanceof AuthenticationException) {
                 $status = 401;
                 $message = 'Não autenticado';
-            }
-
-            elseif($e instanceof AuthorizationException) {
+            } elseif ($e instanceof AuthorizationException) {
                 $status = 403;
                 $message = 'Acesso negado';
-            }
-
-            elseif ($e instanceof NotFoundHttpException) {
+            } elseif ($e instanceof NotFoundHttpException) {
                 $status = 404;
                 $message = 'Recurso não encontrado';
-            }
-
-            elseif ($e instanceof HttpExceptionInterface) {
+            } elseif ($e instanceof HttpExceptionInterface) {
                 $status = $e->getStatusCode();
                 $message = $e->getMessage() ?: 'Requisição inválida';
             }
@@ -74,9 +66,8 @@ return Application::configure(basePath: dirname(__DIR__))
             return response()->json([
                 'success' => false,
                 'message' => $message,
-                'errors'  => $errors,
-                'debug'   => config('app.debug') ? $e->getMessage() : null,
+                'errors' => $errors,
+                'debug' => config('app.debug') ? $e->getMessage() : null,
             ], $status);
         });
     })->create();
-
