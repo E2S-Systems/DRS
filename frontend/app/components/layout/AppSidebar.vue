@@ -29,6 +29,10 @@
 </template>
 
 <script setup lang="ts">
+import { useLogout } from '~/Composables/useLogout';
+
+const { logoutUser, loading: logoutLoading } = useLogout()
+
 const navigation = [
   {
     section: 'PRINCIPAL',
@@ -45,7 +49,18 @@ const navigation = [
     items: [
       { label: 'Configurações', icon: 'cog', to: '/configuration/users' },
     ]
-  }
+  },
+   {
+    section: 'Conta',
+    items: [
+      {
+        label: 'Sair',
+        icon: 'sign-out',
+        action: logoutUser,
+        loading: logoutLoading.value,
+      },
+    ],
+  },
 ]
 
 useSanctumAuth()
