@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\User\CreateUserAction;
+use App\Actions\User\UpdateUserAction;
 use App\Actions\User\ListUsersAction;
 use App\Http\Requests\Store\UserRequest as StoreRequest;
 use App\Http\Requests\Update\UserRequest as UpdateRequest;
@@ -57,10 +58,7 @@ class UserController extends Controller
 
     public function update(UpdateRequest $request, User $user): StoreUpdateUserResource
     {
-        $validated = $request->validated();
-        $user->update($validated);
-
-        $user->load('roles');
+        $user = UpdateUserAction::new()->execute($user, $request->validated());
 
         return (new StoreUpdateUserResource($user))
             ->additional([

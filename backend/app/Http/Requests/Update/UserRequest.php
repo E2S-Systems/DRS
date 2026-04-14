@@ -38,6 +38,7 @@ class UserRequest extends FormRequest
                 'max:255',
             ],
             'password' => 'sometimes|nullable|string|min:8|confirmed:password_confirmation',
+            'role' => 'sometimes|string|in:admin,manager,employee',
         ];
     }
 
