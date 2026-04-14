@@ -160,7 +160,10 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'configuration' })
+definePageMeta({
+    layout: 'configuration', 
+    middleware: ['sanctum:auth'], 
+})
 
 import { useUsers } from '~/Composables/useUsers'
 import { useFormErrors } from '~/Composables/useFormErrors'
