@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\User\CreateUserAction;
-use App\Actions\User\UpdateUserAction;
 use App\Actions\User\ListUsersAction;
+use App\Actions\User\UpdateUserAction;
 use App\Http\Requests\Store\UserRequest as StoreRequest;
 use App\Http\Requests\Update\UserRequest as UpdateRequest;
 use App\Http\Resources\StoreUpdateUserResource;
