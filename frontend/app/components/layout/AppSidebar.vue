@@ -29,7 +29,11 @@
 </template>
 
 <script setup lang="ts">
-const navigation = [
+import { useLogout } from '~/Composables/useLogout';
+
+const { logoutUser, loading: logoutLoading } = useLogout()
+
+const navigation = computed(() => [
   {
     section: 'PRINCIPAL',
     items: [
@@ -45,8 +49,19 @@ const navigation = [
     items: [
       { label: 'Configurações', icon: 'cog', to: '/configuration/users' },
     ]
-  }
-]
+  },
+   {
+    section: 'Conta',
+    items: [
+      {
+        label: 'Sair',
+        icon: 'sign-out',
+        action: logoutUser,
+        loading: logoutLoading.value,
+      },
+    ],
+  },
+])
 
 useSanctumAuth()
 const modalState = ref(true)

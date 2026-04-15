@@ -87,7 +87,7 @@
 
             <div class="flex justify-end gap-3">
                 <Button type="button" severity="secondary" :disabled="isCreating" @click="onCancel" label="CANCELAR" />
-                <Button type="button" :loading="isCreating" @click="onSubmit" label="SALVAR USUÁRIO" />
+                <Button type="button" severity="primary" :loading="isCreating" @click="onSubmit" label="SALVAR USUÁRIO" />
             </div>
 
         </DefaultModal>
@@ -149,7 +149,7 @@
                     <div class="flex items-center gap-2">
                         <Button @click="onEditClick(user)" icon="pi pi-pen-to-square"
                             v-tooltip.top="'Editar usuário'" />
-                        <Button @click="confirmDelete(user)" icon="pi pi-trash" v-tooltip.top="'Excluir usuário'" />
+                        <Button @click="confirmDelete(user)" severity="danger" icon="pi pi-trash" v-tooltip.top="'Excluir usuário'" />
                     </div>
                 </template>
             </Column>
@@ -160,7 +160,10 @@
 </template>
 
 <script setup lang="ts">
-definePageMeta({ layout: 'configuration' })
+definePageMeta({
+    layout: 'configuration', 
+    middleware: ['sanctum:auth'], 
+})
 
 import { useUsers } from '~/Composables/useUsers'
 import { useFormErrors } from '~/Composables/useFormErrors'
