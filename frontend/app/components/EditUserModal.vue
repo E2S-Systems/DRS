@@ -75,7 +75,7 @@
 
         <div class="flex justify-end gap-3">
             <Button type="button" severity="secondary" :disabled="isUpdating" @click="onCancel" label="CANCELAR" />
-            <Button type="button" :loading="isUpdating" @click="onSubmit" label="SALVAR ALTERAÇÕES" />
+            <Button type="button" severity="primary" :loading="isUpdating" @click="onSubmit" label="SALVAR ALTERAÇÕES" />
         </div>
     </DefaultModal>
 </template>
