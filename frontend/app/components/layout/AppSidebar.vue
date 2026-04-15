@@ -33,7 +33,7 @@ import { useLogout } from '~/Composables/useLogout';
 
 const { logoutUser, loading: logoutLoading } = useLogout()
 
-const navigation = [
+const navigation = computed(() => [
   {
     section: 'PRINCIPAL',
     items: [
@@ -61,7 +61,7 @@ const navigation = [
       },
     ],
   },
-]
+])
 
 useSanctumAuth()
 const modalState = ref(true)

@@ -1,6 +1,7 @@
 <template>
   <button
     v-if="props.action"
+    type="button"
     class="text-text-muted hover:text-primary text-md px-4 py-2 w-full text-left cursor-pointer"
     :disabled="props.loading"
     @click="props.action"
@@ -26,7 +27,7 @@ const props = defineProps<{
   icon: string
   to?: string
   modalState: boolean
-  action?: () => void
+  action?: () => void | Promise<void>
   loading?: boolean
 }>()
 
