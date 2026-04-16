@@ -168,6 +168,7 @@ services:
     image: prom/prometheus:v2.55.1
     container_name: prometheus
     profiles: ["observability"]
+    restart: unless-stopped
     volumes:
       - ./infra/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus_data:/prometheus
@@ -180,6 +181,7 @@ services:
     image: grafana/grafana:11.3.1
     container_name: grafana
     profiles: ["observability"]
+    restart: unless-stopped
     depends_on:
       - prometheus
     volumes:
