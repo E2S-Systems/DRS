@@ -165,22 +165,28 @@ services:
   # OBSERVABILIDADE
   # ----------------------------------------------------------------------------
   prometheus:
-    image: prom/prometheus:latest
+    image: prom/prometheus:v2.55.1
     container_name: prometheus
     profiles: ["observability"]
+    restart: unless-stopped
     volumes:
-      - ./infra/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./infra/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
     ports:
       - "9090:9090"
     networks:
       - drs_network
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:11.3.1
     container_name: grafana
     profiles: ["observability"]
+    restart: unless-stopped
     depends_on:
       - prometheus
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./infra/monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
     ports:
       - "3001:3000"
     environment:
@@ -201,6 +207,10 @@ volumes:
   kafka_secrets:
     driver: local
   frontend_node_modules:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
     driver: local
 
 networks:
