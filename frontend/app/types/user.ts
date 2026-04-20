@@ -8,7 +8,7 @@ export interface User {
   role: string
   is_active: boolean
   last_login_at: string | null
-  created_by: string
+  created_by: number | null
 }
 
 export interface CreateUserDTO {
@@ -34,5 +34,6 @@ export interface PaginatedUsersResponse<T> extends PaginatedResponse<T> {
   counts: {
     total: number
     active: number
+    inactive: number
   }
 }

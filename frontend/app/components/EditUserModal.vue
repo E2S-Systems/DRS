@@ -152,18 +152,19 @@ const populateForm = (user: User) => {
 }
 
 watch(
-    () => props.user,
-    (user: User) => {
-        if (!props.visible) return
-        if (!user) {
-            resetForm()
-            return
-        }
-        populateForm(user)
-    },
-    { immediate: true }
+  () => props.user,
+  (user) => {
+    // TypeScript infere `user` como `User | null` automaticamente
+    if (!props.visible) return
+    if (!user) {
+      resetForm()
+      return
+    }
+    populateForm(user) 
+  },
+  { immediate: true }
 )
-// Reabre corretamente o modal mesmo para o mesmo usuário (mesma referência).
+
 watch(
     () => props.visible,
     (isVisible: boolean) => {

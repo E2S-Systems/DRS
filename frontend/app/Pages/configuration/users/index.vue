@@ -162,7 +162,7 @@
 <script setup lang="ts">
 definePageMeta({
     layout: 'configuration', 
-    middleware: ['sanctum:auth'], 
+    // middleware: ['sanctum:auth'], 
 })
 
 import { useUsers } from '~/Composables/useUsers'
@@ -208,13 +208,13 @@ const form = reactive({
 })
 
 function resetForm() {
-    form.first_name = '',
-        form.last_name = '',
-        form.email = '',
-        form.password = '',
-        form.password_confirmation = '',
-        form.role = '',
-        form.is_active = true
+    form.first_name = ''
+    form.last_name = ''
+    form.email = ''
+    form.password = ''
+    form.password_confirmation = ''
+    form.role = ''
+    form.is_active = true
 }
 
 const { fieldErrors, apiError, extractErrors, resetErrors } = useFormErrors({
@@ -222,6 +222,7 @@ const { fieldErrors, apiError, extractErrors, resetErrors } = useFormErrors({
     last_name: '',
     email: '',
     password: '',
+    password_confirmation: '',
     role: '',
 })
 

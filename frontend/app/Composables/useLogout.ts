@@ -13,7 +13,7 @@ export function useLogout() {
     } catch (error) {
       toast.error({
         title: 'Erro!',
-        message: 'Usuário não autenticado.',
+        message: 'Não foi possível sair no momento. Tente novamente.',
         timeout: 3000,
       })
     } finally {

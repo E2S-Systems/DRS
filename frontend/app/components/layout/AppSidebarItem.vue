@@ -22,13 +22,24 @@
 </template>
 
 <script setup lang="ts">
-const props = defineProps<{
+type LinkProps = {
   label: string
   icon: string
-  to?: string
   modalState: boolean
-  action?: () => void | Promise<void>
+  to: string       
+  action?: never  
+  loading?: never
+}
+
+type ActionProps = {
+  label: string
+  icon: string
+  modalState: boolean
+  action: () => void | Promise<void> 
+  to?: never   
   loading?: boolean
-}>()
+}
+
+const props = defineProps<LinkProps | ActionProps>()
 
 </script>
