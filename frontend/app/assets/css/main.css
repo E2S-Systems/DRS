@@ -49,7 +49,7 @@
 }
 
 .p-inputtext:enabled:focus {
-  @apply border-primary bg-transparent;
+  @apply border-primary bg-transparent ring-2 ring-primary ring-offset-2 ring-offset-bg;
 }
 
 .p-inputtext.p-variant-filled{
@@ -57,18 +57,77 @@
 }
 
 /* Estilos referente a elementos do Button Component (Primevue)*/
+/* Base */
 .p-button{
   @apply bg-transparent text-text-muted font-bold border-none rounded-none outline-none w-full;
-}
-
-.p-button:not(:disabled):active {
-  @apply bg-transparent border-b-primary border-x-0 border-t-0 text-text outline-none;
 }
 
 .p-button:not(:disabled):not(:active):hover {
   @apply bg-transparent text-text border-b-primary border-x-0 border-t-0;
 }
 
+.p-button:not(:disabled):active {
+  @apply bg-primary-active border-b-primary border-x-0 border-t-0 text-text outline-none;
+}
+
 .p-button:focus-visible {
-  @apply border-none;
+  @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-bg;
+}
+
+
+/* Primary */
+.p-button-primary{
+  @apply bg-primary text-white font-bold;
+}
+
+.p-button-primary:not(:disabled):not(:active):hover {
+  @apply bg-primary-hover text-text border-b-primary border-x-0 border-t-0;
+}
+
+.p-button-primary:not(:disabled):active {
+  @apply bg-primary-active border-b-primary border-x-0 border-t-0 text-text outline-none;
+}
+
+/* Secondary */
+.p-button-secondary:not(:disabled):active {
+  @apply bg-transparent border-b-primary border-x-0 border-t-0 text-text outline-none;
+}
+
+/* Danger */
+.p-button-danger {
+  @apply bg-transparent text-danger border border-danger;
+}
+
+.p-button-danger:not(:disabled):hover {
+  @apply bg-danger-bg text-danger border-danger;
+}
+
+.p-button-danger:not(:disabled):active {
+  @apply bg-danger text-white border-danger;
+}
+
+.p-button-danger:disabled {
+  @apply opacity-40 cursor-not-allowed;
+}
+
+/* Estilos referente a elementos do Dialog (modal) Component (Primevue)*/
+.p-dialog{
+  @apply border-t-primary border-t-4 border-x-0 border-b-0 rounded-none;
+}
+
+/* Estilos referente a elementos do Select Component (Primevue)*/
+.p-select{
+  @apply border-b-text-muted border-t-0 border-x-0 rounded-none bg-transparent;
+}
+
+.p-select:not(.p-disabled).p-focus {
+  @apply border-primary;
+}
+
+.p-select-option.p-select-option-selected {
+  @apply bg-bg-panel text-text font-bold;
+}
+
+.p-select-option.p-select-option-selected.p-focus {
+  @apply bg-bg-panel text-text font-bold;
 }

@@ -38,12 +38,16 @@ class UserRequest extends FormRequest
                 'max:255',
             ],
             'password' => 'sometimes|nullable|string|min:8|confirmed:password_confirmation',
+            'role' => 'sometimes|string|in:admin,manager,employee',
         ];
     }
 
     public function messages()
     {
         return [
+            'first_name.string' => 'O campo nome deve ser um texto.',
+            'last_name.string' => 'O campo sobrenome deve ser um texto.',
+            'email.string' => 'O campo email deve ser um texto.',
             'first_name.required' => 'O campo nome é obrigatório.',
             'last_name.required' => 'O campo sobrenome é obrigatório.',
             'email.required' => 'O campo email é obrigatório.',
@@ -52,6 +56,8 @@ class UserRequest extends FormRequest
             'password.required' => 'O campo senha é obrigatório.',
             'password.min' => 'A senha deve ter pelo menos 8 caracteres.',
             'password.confirmed' => 'A confirmação da senha não corresponde.',
+            'password_confirmation.required' => 'O campo de confirmação de senha é obrigatório.',
+            'password_confirmation.confirmed' => 'A confirmação da senha não corresponde.',
         ];
     }
 }

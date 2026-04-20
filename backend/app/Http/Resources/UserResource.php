@@ -27,6 +27,12 @@ class UserResource extends JsonResource
             'last_login_at' => $this->last_login_at?->toDateTimeString(),
             'created_at' => $this->created_at->toDateTimeString(),
             'updated_at' => $this->updated_at->toDateTimeString(),
+            'created_by' => $this->whenLoaded(
+                'creator',
+                fn () => $this->creator
+                ? "{$this->creator->id}"
+                : null
+            ),
         ];
     }
 }

@@ -8,6 +8,7 @@ use App\Enums\RoleUser;
 use App\Models\User;
 use App\Traits\Newable;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 class CreateUserAction
 {
@@ -17,7 +18,10 @@ class CreateUserAction
     {
         $role = RoleUser::from($data['role']);
 
-        $user = User::create(Arr::except($data, ['role']));
+        $user = User::create([
+            ...Arr::except($data, ['role']),
+            'created_by' => Auth::id(),
+        ]);
 
         $user->assignRole($role->value);
 

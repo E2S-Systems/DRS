@@ -22,31 +22,47 @@
     <nav class="flex flex-col flex-1 overflow-y-auto py-4">
       <AppSidebarSection v-for="group in navigation" :key="group.section" :modal-state="modalState"
         :label="group.section" class="flex flex-col mb-6">
-        <AppSidebarItem v-for="item in group.items" :key="item.to" v-bind="item" :modal-state="modalState" />
+        <AppSidebarItem v-for="item in group.items" :key="item.key" v-bind="item" :loading="item.key === 'logout' ? logoutLoading : undefined" :modal-state="modalState" />
       </AppSidebarSection>
     </nav>
   </aside>
 </template>
 
 <script setup lang="ts">
-const navigation = [
+import { useLogout } from '~/Composables/useLogout';
+
+const { logoutUser, loading: logoutLoading } = useLogout()
+
+const navigation = computed(() => [
   {
     section: 'PRINCIPAL',
     items: [
-      { label: 'Dashboard', icon: 'th-large', to: '/dashboard' },
-      // { label: 'Vendas', icon: 'shopping-cart', to: '/vendas' },
-      // { label: 'Financeiro', icon: 'wallet', to: '/financeiro' },
-      // { label: 'Estoque', icon: 'box', to: '/estoque' },
-      // { label: 'RH', icon: 'users', to: '/rh' },
+      { key: 'dashboard', label: 'Dashboard', icon: 'th-large', to: '/dashboard' },
+      // { key: 'vendas', label: 'Vendas', icon: 'shopping-cart', to: '/vendas' },
+      // { key: 'financeiro', label: 'Financeiro', icon: 'wallet', to: '/financeiro' },
+      // { key: 'estoque', label: 'Estoque', icon: 'box', to: '/estoque' },
+      // { key: 'recursos_humanos', label: 'RH', icon: 'users', to: '/rh' },
     ]
   },
   {
     section: 'SISTEMA',
     items: [
-      { label: 'Configurações', icon: 'cog', to: '/configuration/users' },
+      { key: 'configuration', label: 'Configurações', icon: 'cog', to: '/configuration/users' },
     ]
-  }
-]
+  },
+  {
+    section: 'Conta',
+    items: [
+      {
+        key: 'logout',
+        label: 'Sair',
+        icon: 'sign-out',
+        action: logoutUser,
+        loading: logoutLoading,
+      },
+    ],
+  },
+])
 
 useSanctumAuth()
 const modalState = ref(true)

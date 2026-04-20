@@ -1,58 +1,9 @@
-interface PaginatedResponse<T> {
-  data: T[]
-  links: {
-    first: string
-    last: string
-    prev: string | null
-    next: string | null
-  }
-  meta: {
-    current_page: number
-    last_page: number
-    per_page: number
-    total: number
-    from: number
-    to: number
-  }
-  counts: {
-    total: number
-    active: number
-    inactive: number
-  }
-  success: boolean
-  message: string
-}
-
-interface User {
-  id: number
-  first_name: string
-  last_name: string
-  email: string
-  role: string
-  is_active: boolean
-  last_login_at: string | null
-}
-
-interface CreateUserDTO {
-  first_name: string
-  last_name: string
-  email: string
-  role: string
-  password: string
-  is_active: boolean
-}
-
-interface UpdateUserDTO {
-  first_name?: string
-  last_name?: string
-  email?: string
-  role?: string
-  is_active?: boolean
-}
+import type { User, CreateUserDTO, UpdateUserDTO, PaginatedUsersResponse } from '~/types/user'
 
 export function useUsers() {
   const client = useSanctumClient()
   const { public: { apiUrl } } = useRuntimeConfig()
+  const toast = useToast()
 
   const normalizedApiUrl = apiUrl.endsWith('/') ? apiUrl : `${apiUrl}/`
 
@@ -64,7 +15,7 @@ export function useUsers() {
   const isUpdating = ref(false)
   const isDeleting = ref(false)
 
-  const { data: response, pending, error, refresh } = useFetch<PaginatedResponse<User>>(
+  const { data: response, pending, error, refresh } = useFetch<PaginatedUsersResponse<User>>(
     `${normalizedApiUrl}users`,
     {
       $fetch: client,
@@ -91,6 +42,12 @@ export function useUsers() {
         method: 'POST',
         body: payload,
       })
+      toast.success({
+        title: 'Usuário criado com sucesso!',
+        message: `Confirmação da criação de usuário`,
+        icon: 'pi pi-check',
+        position: 'topCenter',
+      })
       await refresh()
     } finally {
       isCreating.value = false
@@ -103,6 +60,12 @@ export function useUsers() {
       await client(`${normalizedApiUrl}users/${id}`, {
         method: 'PUT',
         body: payload,
+      })
+      toast.success({
+        title: 'Usuário atualizado com sucesso!',
+        message: `Confirmação da atualização de usuário`,
+        icon: 'pi pi-check',
+        position: 'topCenter',
       })
       await refresh()
     } finally {
@@ -120,6 +83,13 @@ export function useUsers() {
       if (data.value.length === 1 && currentPage.value > 1) {
         currentPage.value -= 1
       }
+
+      toast.success({
+        title: 'Usuário deletado com sucesso!',
+        message: `Confirmação da exclusão de usuário`,
+        icon: 'pi pi-check',
+        position: 'topCenter',
+      })
 
       await refresh()
     } finally {

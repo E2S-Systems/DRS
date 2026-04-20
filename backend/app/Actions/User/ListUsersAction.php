@@ -21,13 +21,7 @@ class ListUsersAction
     public function execute(Request $request): array
     {
         $query = User::query()
-            ->with('roles') // ← eager load to prevent N+1
-            ->join('model_has_roles', function ($join) {
-                $join->on('users.id', '=', 'model_has_roles.model_id')
-                    ->where('model_has_roles.model_type', '=', User::class);
-            })
-            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
-            ->select('users.*')
+            ->with(['roles', 'creator:id'])
             ->when(
                 $request->filled('search'),
                 fn ($q) => $q->where(function ($q) use ($request) {
@@ -41,7 +35,8 @@ class ListUsersAction
             ->when(
                 $request->filled('status'),
                 fn ($q) => $q->where('is_active', $request->boolean('status'))
-            );
+            )
+            ->orderBy('id', 'asc');
 
         $countQuery = clone $query;
 
