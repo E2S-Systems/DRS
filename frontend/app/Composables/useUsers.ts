@@ -1,11 +1,11 @@
 import type { User, CreateUserDTO, UpdateUserDTO, PaginatedUsersResponse } from '~/types/user'
+import { normalizeApiUrl } from '~/utils/api'
 
 export function useUsers() {
   const client = useSanctumClient()
   const { public: { apiUrl } } = useRuntimeConfig()
+  const normalizedApiUrl = normalizeApiUrl(apiUrl)
   const toast = useToast()
-
-  const normalizedApiUrl = apiUrl.endsWith('/') ? apiUrl : `${apiUrl}/`
 
   const currentPage = useState('users.currentPage', () => 1)
   const search = useState('users.search', () => '')
