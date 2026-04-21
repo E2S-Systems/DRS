@@ -49,6 +49,8 @@ export function useUsers() {
         position: 'topCenter',
       })
       await refresh()
+    } catch (error) {
+      throw error
     } finally {
       isCreating.value = false
     }
@@ -68,6 +70,8 @@ export function useUsers() {
         position: 'topCenter',
       })
       await refresh()
+    } catch (error) {
+      throw error
     } finally {
       isUpdating.value = false
     }
@@ -92,6 +96,8 @@ export function useUsers() {
       })
 
       await refresh()
+    } catch (error) {
+      throw error
     } finally {
       isDeleting.value = false
     }
