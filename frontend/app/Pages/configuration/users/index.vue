@@ -1,5 +1,6 @@
 <template>
     <main class="pt-14 px-4 w-full max-w-full">
+
         <div class="flex justify-between">
             <div>
                 <span class="font-bold tracking-wider text-xl block">USUÁRIOS</span>
@@ -8,89 +9,12 @@
                 </span>
             </div>
             <div>
-                <button class="bg-primary hover:bg-primary-hover w-60 h-full cursor-pointer" @click="visible = true">
+                <button class="bg-primary hover:bg-primary-hover w-60 h-full cursor-pointer" @click="openCreateModal">
                     <i class="pi pi-plus m-2" style="font-size: 0.8rem" />
                     <span class="tracking-wider text-xl">NOVO USUÁRIO</span>
                 </button>
             </div>
         </div>
-
-        <DefaultModal :title="title" v-model:visible="visible">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-6 mb-6">
-                <div class="flex flex-col gap-1">
-                    <label for="first_name" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
-                        Primeiro Nome
-                    </label>
-                    <InputText id="first_name" v-model="form.first_name" type="text" autocomplete="off"
-                        placeholder="Ex.: Rafael" class="w-full" />
-                    <small v-if="fieldErrors.first_name" class="text-red-500">
-                        {{ fieldErrors.first_name }}
-                    </small>
-                </div>
-
-                <div class="flex flex-col gap-1">
-                    <label for="last_name" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
-                        Sobrenome
-                    </label>
-                    <InputText id="last_name" v-model="form.last_name" type="text" autocomplete="off"
-                        placeholder="Ex.: Silva dos Santos" class="w-full" />
-                    <small v-if="fieldErrors.last_name" class="text-red-500">
-                        {{ fieldErrors.last_name }}
-                    </small>
-                </div>
-
-                <div class="flex flex-col gap-1">
-                    <label for="email" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
-                        E-mail
-                    </label>
-                    <InputText id="email" v-model="form.email" type="text" autocomplete="off"
-                        placeholder="Ex.: rafael.silva@gmail.com" class="w-full" />
-                    <small v-if="fieldErrors.email" class="text-red-500">
-                        {{ fieldErrors.email }}
-                    </small>
-                </div>
-
-                <div class="flex flex-col gap-1">
-                    <label for="password" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
-                        Senha Temporária
-                    </label>
-                    <InputText id="password" v-model="form.password" type="password" autocomplete="off"
-                        placeholder="Mín. 8 caracteres" class="w-full" />
-                    <small v-if="fieldErrors.password" class="text-red-500">
-                        {{ fieldErrors.password }}
-                    </small>
-                </div>
-
-                <div class="flex flex-col gap-1">
-                    <label for="password_confirmation"
-                        class="text-xs font-semibold tracking-widest uppercase text-surface-400">
-                        Confirmação de Senha
-                    </label>
-                    <InputText id="password_confirmation" v-model="form.password_confirmation" type="password"
-                        autocomplete="off" placeholder="Mín. 8 caracteres" class="w-full" />
-                    <small v-if="fieldErrors.password_confirmation" class="text-red-500">
-                        {{ fieldErrors.password_confirmation }}
-                    </small>
-                </div>
-
-                <div class="flex flex-col gap-1">
-                    <label for="role" class="text-xs font-semibold tracking-widest uppercase text-surface-400">
-                        Perfil de Acesso
-                    </label>
-                    <Select id="role" v-model="form.role" :options="roles" optionLabel="name" optionValue="code"
-                        placeholder="Selecione o perfil" class="w-full" />
-                    <small v-if="fieldErrors.role" class="text-red-500">
-                        {{ fieldErrors.role }}
-                    </small>
-                </div>
-            </div>
-
-            <div class="flex justify-end gap-3">
-                <Button type="button" severity="secondary" :disabled="isCreating" @click="onCancel" label="CANCELAR" />
-                <Button type="button" severity="primary" :loading="isCreating" @click="onSubmit" label="SALVAR USUÁRIO" />
-            </div>
-
-        </DefaultModal>
 
         <div class="flex justify-items-stretch py-8">
             <button v-for="tab in tabs" :key="String(tab.value)"
@@ -106,7 +30,6 @@
             Erro ao carregar usuários: {{ error.message }}
         </p>
 
-
         <DefaultTable v-else :value="data" :loading="pending" :perPage="meta?.per_page ?? 10" :total="meta?.total ?? 0"
             model="usuários" :from="meta?.from ?? 0" :to="meta?.to ?? 0" :search="search" @page="onPageChange"
             @search="onSearch">
@@ -118,9 +41,8 @@
 
             <Column field="is_active" header="Status">
                 <template #body="{ data: user }">
-                    <span class="px-2 py-1 rounded-full text-xs font-bold tracking-wider" :class="user.is_active
-                        ? 'text-[#00C407]'
-                        : 'text-text-muted'">
+                    <span class="px-2 py-1 rounded-full text-xs font-bold tracking-wider"
+                        :class="user.is_active ? 'text-[#00C407]' : 'text-text-muted'">
                         {{ user.is_active ? 'ATIVO' : 'INATIVO' }}
                     </span>
                 </template>
@@ -134,53 +56,57 @@
 
             <Column field="created_by" header="Criado por">
                 <template #body="{ data: user }">
-                    <span v-if="user.created_by">
-                    {{ user.created_by }}
-                    </span>
-                    <span v-else class="text-text-muted text-xs">
-                        —
-                    </span>
+                    <span v-if="user.created_by">{{ user.created_by }}</span>
+                    <span v-else class="text-text-muted text-xs">—</span>
                 </template>
             </Column>
 
             <ConfirmDialog :draggable="false" :blockScroll="true" />
+
             <Column field="actions" header="Ações">
                 <template #body="{ data: user }">
                     <div class="flex items-center gap-2">
-                        <Button @click="onEditClick(user)" icon="pi pi-pen-to-square"
-                            v-tooltip.top="'Editar usuário'" />
-                        <Button @click="confirmDelete(user)" severity="danger" icon="pi pi-trash" v-tooltip.top="'Excluir usuário'" />
+                        <Button icon="pi pi-pen-to-square" v-tooltip.top="'Editar usuário'"
+                            @click="openEditModal(user)" />
+                        <Button severity="danger" icon="pi pi-trash" v-tooltip.top="'Excluir usuário'"
+                            @click="confirmDelete(user)" />
                     </div>
                 </template>
             </Column>
         </DefaultTable>
 
-        <EditUserModal v-model:visible="editModalVisible" :user="selectedUser" @saved="refresh()" />
+        <UserModal v-model:visible="modalVisible" :user="selectedUser" @saved="onModalSaved" @close="onModalClose" />
+
     </main>
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-    layout: 'configuration', 
-    // middleware: ['sanctum:auth'], 
-})
-
+import type { User } from '~/types/user'
 import { useUsers } from '~/Composables/useUsers'
-import { useFormErrors } from '~/Composables/useFormErrors'
-import type { User } from '~/types/user';
 
-useHead({
-    title: "Configurações - Usuários"
+definePageMeta({
+    layout: 'configuration',
+    // middleware: ['sanctum:auth'],
 })
 
-const confirm = useConfirm();
+useHead({ title: 'Configurações - Usuários' })
 
-const { data, meta, counts, pending, error,
-    search, status,
-    isCreating,
-    createUser,
+const confirm = useConfirm()
+
+const {
+    data,
+    meta,
+    counts,
+    pending,
+    error,
+    search,
+    status,
     deleteUser,
-    onPageChange, onSearch, onStatusChange } = useUsers()
+    refresh,
+    onPageChange,
+    onSearch,
+    onStatusChange,
+} = useUsers()
 
 const tabs = computed(() => [
     { value: '' as const, label: 'TODOS ', count: counts.value?.total ?? 0 },
@@ -188,102 +114,51 @@ const tabs = computed(() => [
     { value: false as const, label: 'INATIVOS ', count: counts.value?.inactive ?? 0 },
 ])
 
-const title = 'CRIAR USUÁRIO'
-const visible = ref(false)
-
-const roles = ref([
-    { name: 'Administrador', code: 'admin' },
-    { name: 'Gerente', code: 'manager' },
-    { name: 'Empregado', code: 'employee' }
-])
-
-const form = reactive({
-    first_name: '',
-    last_name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-    role: '',
-    is_active: true
-})
-
-function resetForm() {
-    form.first_name = ''
-    form.last_name = ''
-    form.email = ''
-    form.password = ''
-    form.password_confirmation = ''
-    form.role = ''
-    form.is_active = true
-}
-
-const { fieldErrors, apiError, extractErrors, resetErrors } = useFormErrors({
-    first_name: '',
-    last_name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-    role: '',
-})
-
-function onCancel() {
-    visible.value = false
-    resetErrors()
-    resetForm()
-}
-
-async function onSubmit() {
-    try {
-        await createUser({ ...form })
-        onCancel()
-    } catch (err) {
-        extractErrors(err) // tudo encapsulado
-    }
-}
+const modalVisible = ref(false)
 
 const selectedUser = ref<User | null>(null)
 
-const confirmDelete = (user: User) => {
+const openCreateModal = () => {
+    selectedUser.value = null
+    modalVisible.value = true
+}
+
+const openEditModal = (user: User) => {
     selectedUser.value = user
+    modalVisible.value = true
+}
+
+const onModalSaved = () => {
+    refresh()
+}
+
+const onModalClose = () => {
+    selectedUser.value = null
+}
+
+const confirmDelete = (user: User) => {
     confirm.require({
         message: `Você deseja mesmo excluir o usuário ${user.first_name}?`,
         header: 'CONFIRMAR EXCLUSÃO',
         icon: 'pi pi-exclamation-triangle',
         rejectLabel: 'CANCELAR',
-        rejectProps: {
-            label: 'CANCELAR',
-            severity: 'secondary',
-            outlined: true
-        },
-        acceptProps: {
-            label: 'EXCLUIR',
-            severity: 'danger'
-        },
+        rejectProps: { label: 'CANCELAR', severity: 'secondary', outlined: true },
+        acceptProps: { label: 'EXCLUIR', severity: 'primary' },
         accept: () => deleteUser(user.id),
-        reject: () => { selectedUser.value = null }
-    });
-};
-
-const editModalVisible = ref(false)
-
-const onEditClick = (user: User) => {
-    selectedUser.value = user
-    editModalVisible.value = true
+        reject: () => { },
+    })
 }
 
-// considerar extrair para um composable useDateFormat
 function formatDate(dateString: string | null): string {
     if (!dateString) return '—'
-
-    const date = new Date(dateString)
 
     return new Intl.DateTimeFormat('pt-BR', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-    }).format(date)
+        hour: 'numeric',
+        minute: 'numeric',
+        second: 'numeric',
+    }).format(new Date(dateString))
 }
 </script>
