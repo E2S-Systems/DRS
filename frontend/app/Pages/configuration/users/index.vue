@@ -37,7 +37,11 @@
             <Column field="first_name" header="Nome" />
             <Column field="last_name" header="Sobrenome" />
             <Column field="email" header="E-mail" />
-            <Column field="role" header="Perfil" />
+            <Column field="role" header="Perfil">
+                <template #body="{ data }">
+                    <span>{{ getRoleLabel(data.role) }}</span>
+                </template>
+            </Column>
 
             <Column field="is_active" header="Status">
                 <template #body="{ data: user }">
@@ -83,6 +87,7 @@
 <script setup lang="ts">
 import type { User } from '~/types/user'
 import { useUsers } from '~/Composables/useUsers'
+import { useRoles } from '~/Composables/useRoles'
 
 definePageMeta({
     layout: 'configuration',
@@ -91,6 +96,7 @@ definePageMeta({
 
 useHead({ title: 'Configurações - Usuários' })
 
+const { getRoleLabel } = useRoles()
 const confirm = useConfirm()
 
 const {

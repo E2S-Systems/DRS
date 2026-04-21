@@ -87,6 +87,8 @@
 <script setup lang="ts">
 import type { User, CreateUserDTO, UpdateUserDTO } from '~/types/user'
 import { useUsers } from '~/Composables/useUsers'
+import type { Role } from '~/Composables/useRoles'
+import { useRoles } from '~/Composables/useRoles';
 
 const props = defineProps<{
     visible: boolean
@@ -110,11 +112,7 @@ const { createUser, updateUser, isCreating, isUpdating } = useUsers()
 
 const isLoading = computed(() => isEditing.value ? isUpdating.value : isCreating.value)
 
-const roles = [
-    { name: 'Administrador', code: 'admin' },
-    { name: 'Gerente', code: 'manager' },
-    { name: 'Funcionário', code: 'employee' },
-]
+const { roles } = useRoles()
 
 interface UserForm {
     first_name: string
